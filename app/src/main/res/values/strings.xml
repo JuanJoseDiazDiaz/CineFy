@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Cinefy</string>
+    <string name="title_AboutUs">Sobre Nosotros..</string>
+    <string name="Descripcion">"Descripción: "</string>
+    <string name="Tematica">"Temática: "</string>
+    <string name="Version">"Versión: "</string>
+</resources>
