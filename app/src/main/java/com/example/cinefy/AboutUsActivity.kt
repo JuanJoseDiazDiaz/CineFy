@@ -32,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.cinefy.ui.theme.CinefyTheme
 import com.example.cinefy.ui.theme.componets.StandardButtonImage
 
@@ -85,7 +86,7 @@ class AboutUsActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.SplashTheme)
+        val screenSplash = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -114,6 +115,7 @@ class AboutUsActivity : ComponentActivity() {
                 }
             }
         }
+        screenSplash.setKeepOnScreenCondition{false}
     }
 }
 
