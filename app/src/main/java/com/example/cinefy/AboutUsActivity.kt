@@ -1,6 +1,7 @@
 package com.example.cinefy
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,16 +36,26 @@ import com.example.cinefy.ui.theme.CinefyTheme
 import com.example.cinefy.ui.theme.componets.StandardButtonImage
 
 class AboutUsActivity : ComponentActivity() {
+
     companion object {
         private const val ASUNTO = "EXTRA_SUBJECT"
         private const val CUERPO = "EXTRA_TEXT"
     }
-
-    fun ContactarCreador(nameApp: String, tematica: String, descripcion: String, version: Float, modifier: Modifier = Modifier) {
-
+    // todo -> Metodo ContactarCreador:
+    /**
+     * Este metodo realiza la función de enviar los datos obtenidos atraves de un intent,
+     * de forma que cuando se habrá la aplicación que desees de envios salga un asunto concreto y un cuerpo concreto
+     * */
+    fun ContactarCreador(
+        nameApp: String,
+        tematica: String,
+        descripcion: String,
+        version: Float,
+        modifier: Modifier = Modifier
+    ) {
         val asunto = "La aplicación llamada es: ${nameApp}, tengo dudas o inconvenientes con ella"
         val tematica = "La tematica es la siguiente: ${tematica}"
-        val descripcion ="Esta es la descripcion de la app: ${descripcion}"
+        val descripcion = "Esta es la descripcion de la app: ${descripcion}"
         val version = "La versión es: ${version}"
 
         // Configura un Intent de tipo "SEND" para compartir texto plano
@@ -74,6 +85,7 @@ class AboutUsActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.SplashTheme)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

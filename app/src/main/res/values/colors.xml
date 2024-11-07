@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="Azul_Claro">#169cc4</color>
     <color name="Naranja_Pastel">#f5b041</color>
+    <color name="Gris_SplashScreen">#bfc9ca</color>
+    <color name="GrisDark_SplashScreen">#95a5a6</color>
+    <color name="GrisSplashScreen">#717d7e</color>
 </resources>

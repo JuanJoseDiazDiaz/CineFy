@@ -4,4 +4,5 @@
     <string name="Descripcion">"Descripción: "</string>
     <string name="Tematica">"Temática: "</string>
     <string name="Version">"Versión: "</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
 </resources>
