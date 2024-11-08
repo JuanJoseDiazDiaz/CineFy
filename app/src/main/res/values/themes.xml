@@ -4,9 +4,8 @@
     <!-- Tema principal de la app -->
     <style name="Theme.Cinefy" parent="android:Theme.Material.Light.NoActionBar" />
 
-
     <style name="Theme.Cinefy.SplashScreen" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/GrisDark_SplashScreen</item>
+        <item name="windowSplashScreenBackground">@color/black</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/cinefylogo</item>
         <item name="windowSplashScreenAnimationDuration">300</item>
         <item name="postSplashScreenTheme">@style/Theme.Cinefy</item>
