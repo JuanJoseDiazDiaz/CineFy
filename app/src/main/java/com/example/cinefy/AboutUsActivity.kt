@@ -224,14 +224,14 @@ private fun PresentationAboutUs(
 
 @Composable
 private fun ShowImage(modifier: Modifier = Modifier) {
-    val image = painterResource(id = R.drawable.cinefylogo_copy) // Carga la imagen a mostrar
+    val image = painterResource(id = R.drawable.cinefylogo) // Carga la imagen a mostrar
     // Imagen de tamaño fijo de 250dp de ancho
     Image(
         painter = image,
         contentDescription = null,
         modifier = Modifier
-            .width(260.dp)
-            .height(400.dp)
+            .width(650.dp)
+            .height(650.dp)
     )
 
 }
