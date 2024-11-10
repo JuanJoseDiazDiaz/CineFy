@@ -143,7 +143,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //        PresentationAboutUs(nameApp, tematica, descripcion, version, onClickSendData)
 //    }
 //}
-
 @Composable
 private fun PresentationAboutUs(
     name: String,
@@ -235,5 +234,6 @@ private fun ShowImage(modifier: Modifier = Modifier) {
     )
 
 }
+
 
 
