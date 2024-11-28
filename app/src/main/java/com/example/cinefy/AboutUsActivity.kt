@@ -229,8 +229,8 @@ private fun ShowImage(modifier: Modifier = Modifier) {
         painter = image,
         contentDescription = null,
         modifier = Modifier
-            .width(650.dp)
-            .height(650.dp)
+            .width(800.dp)
+            .height(800.dp)
     )
 
 }
