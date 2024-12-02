@@ -1,5 +1,7 @@
 package com.example.cinefy.model
 
+import com.example.cinefy.R
+
 object DataSource {
     val movieList: () -> MutableList<Movie> = {
         mutableListOf<Movie>(
@@ -61,5 +63,31 @@ object DataSource {
                 imdbid_link = "https://www.imdb.com/title/tt0253474"
             )
         ).apply { shuffle()}
+    }
+    val getListXtimes : (Int) -> MutableList<Movie> = { times ->
+        val list = mutableListOf<Movie>()
+        for (i in 1..times){
+            list.addAll(movieList())
+        }
+        list.shuffle()
+        list
+    }
+    val getMovieName : (String) -> Movie? = { title ->
+        movieList().find { it.title == title } ?: null
+    }
+
+    val getSomeRandMovies : (Int) -> MutableList<Movie> = { num ->
+        val movies = movieList()
+        if(num <= movies.size) movies.subList(0, num)
+        movies
+    }
+    fun getDrawableIdName(title : String) : Int {
+        return when (title) {
+            "openheimerposter" -> R.drawable.openheimerposter
+            "harakiri_poster" -> R.drawable.harakiri_poster
+            "backtothefuture_poster" -> R.drawable.backtothefuture_poster
+            "thepianist_poster" -> R.drawable.thepianist_poster
+            else -> R.drawable.cinefylogo
+        }
     }
 }

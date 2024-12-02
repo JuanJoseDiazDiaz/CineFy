@@ -33,8 +33,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.cinefy.ui.theme.CinefyTheme
+import com.example.cinefy.model.DataSource
 import com.example.cinefy.ui.theme.componets.StandardButtonImage
+import com.example.cinefy.ui.theme.screens.ElemtListScreen
+import com.example.compose.CinefyTheme
 
 class AboutUsActivity : ComponentActivity() {
 
@@ -104,14 +106,7 @@ class AboutUsActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    PresentationAboutUs(
-                        nameApp,
-                        tematica,
-                        descripcion,
-                        version,
-                        { ContactarCreador(nameApp, tematica, descripcion, version) },
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                   ElemtListScreen(DataSource.movieList(), modifier = Modifier.padding(innerPadding))
                 }
             }
         }

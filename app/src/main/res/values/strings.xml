@@ -5,4 +5,6 @@
     <string name="Tematica">"Temática: "</string>
     <string name="Version">"Versión: "</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="listaDePeliculas">Listas de Películas</string>
+    <string name="more_content_desc">Icono</string>
 </resources>
