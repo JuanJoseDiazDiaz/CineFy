@@ -23,7 +23,7 @@ object DataSource {
             Movie(
                 rank = 33,
                 title = "Harakiri",
-                descripcion = "When a ronin requesting seppuku at a feudal lord's palace is told of the brutal suicide of another ronin who previously visited, he reveals how their pasts are intertwined - and in doing so challenges the clan's integrity.",
+                descripcion = "When a ronin requesting seppuku at a feudal lord's palace is told of the brutal suicide of another ronin who previously visited",
                 image = "harakiri_poster",
                 bigimage = "harakiri_poster",
                 genre = "Action",

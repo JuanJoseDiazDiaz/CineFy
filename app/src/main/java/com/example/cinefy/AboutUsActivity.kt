@@ -1,5 +1,7 @@
 package com.example.cinefy
 
+import DetailItemScreen
+import FavListScreenContent
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.cinefy.model.DataSource
 import com.example.cinefy.ui.theme.componets.StandardButtonImage
+import com.example.cinefy.ui.theme.screens.DetailFavScreenContent
 import com.example.cinefy.ui.theme.screens.ElemtListScreen
 import com.example.compose.CinefyTheme
 
@@ -114,7 +117,6 @@ class AboutUsActivity : ComponentActivity() {
                         { ContactarCreador(nameApp, tematica, descripcion, version) },
                         modifier = Modifier.padding(innerPadding)
                     )
-
                 }
             }
         }

@@ -26,7 +26,6 @@ import com.example.cinefy.model.DataSource
 import com.example.cinefy.model.Movie
 import com.example.cinefy.ui.theme.componets.MovieCard
 import com.example.compose.extendedLight
-import com.google.ai.client.generativeai.type.content
 
 @Composable
 fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {

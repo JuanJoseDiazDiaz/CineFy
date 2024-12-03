@@ -9,4 +9,11 @@
     <string name="more_content_desc">Icono</string>
     <string name="title_activity_elemt_list">ElemtListActivity</string>
     <string name="DetailFavoritos">Detalles de los Favoritos</string>
+    <string name="Detail_Item">Detalles de la Película</string>
+    <string name="AddFav">Añadido a Fav</string>
+    <string name="AddConfirm">Añadido</string>
+    <string name="title_activity_detail_fav">DetailFavActivity</string>
+    <string name="nameUser">Juan José</string>
+    <string name="emailUser">openHpuertas@gmail.com</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 </resources>

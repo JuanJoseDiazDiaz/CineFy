@@ -13,6 +13,21 @@
         android:theme="@style/Theme.Cinefy"
         tools:targetApi="31">
         <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/Theme.Cinefy" />
+        <activity
+            android:name=".DetailFavActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detail_fav"
+            android:theme="@style/Theme.Cinefy" />
+        <activity
+            android:name=".DetailFavActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detail_fav"
+            android:theme="@style/Theme.Cinefy" />
+        <activity
             android:name=".ElemtListActivity"
             android:exported="false"
             android:label="@string/title_activity_elemt_list"
