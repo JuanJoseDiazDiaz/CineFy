@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,24 +30,36 @@ import com.example.compose.extendedLight
 
 @Composable
 fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+    // Detectar el tamaño de la pantalla
+    val configuration = LocalConfiguration.current
+    val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
+
     Column(modifier = modifier.fillMaxSize()) {
         // Uso de MedHeaderComp para la cabecera
         MedHeaderComp(title = stringResource(R.string.listaDePeliculas))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 16.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),
-            content = {
-                items(movies) { movie ->
-                    MovieCard(movie)
+        if (!isExpanded) {
+            // Pantalla expandida
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                contentPadding = PaddingValues(12.dp),
+                content = {
+                    items(movies) { movie ->
+                        MovieCard(movie)
+                    }
                 }
-            }
-        )
+            )
+        } else {
+            // Pantalla compacta
+            LazyColumn(
+                contentPadding = PaddingValues(12.dp),
+                content = {
+                    items(movies) { movie ->
+                        MovieCard(movie)
+                    }
+                }
+            )
+        }
     }
 }
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -69,4 +70,12 @@ fun StandardTextComp(text: String, modifier: Modifier = Modifier, style  : andro
         text = text,
         style = style
     )
+}
+
+@Composable
+fun ResponsiveScreen(content: @Composable (isExpanded: Boolean) -> Unit) {
+    val configuration = LocalConfiguration.current
+    val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
+
+    content(isExpanded)
 }

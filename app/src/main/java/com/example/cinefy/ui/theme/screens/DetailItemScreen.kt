@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,16 +30,34 @@ import com.example.compose.extendedLight
 
 @Composable
 fun DetailItemScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+    // Detectar el tamaño de la pantalla
+    val configuration = LocalConfiguration.current
+    val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
+
     Column(modifier = modifier.fillMaxSize()) {
         // Uso de MedHeaderComp para la cabecera
         MedHeaderComp3(title = stringResource(R.string.Detail_Item))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            items(movies) { movie ->
-                MovieCardDetailWithFavButton(movie)
+        if (isExpanded) {
+            // Pantalla expandida
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                items(movies) { movie ->
+                    MovieCardDetailWithFavButton(movie)
+                }
+            }
+        } else {
+            // Pantalla compacta
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                items(movies) { movie ->
+                    MovieCardDetailWithFavButton(movie)
+                }
             }
         }
     }
@@ -55,13 +74,21 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
     ) {
         MovieCardDetail(movie)
         Spacer(modifier = Modifier.height(8.dp))
-       Column (modifier = Modifier
-           .fillMaxWidth(),
-           horizontalAlignment = Alignment.CenterHorizontally){
-           Button(onClick = {
-               isFavorite = !isFavorite
-           }) { Text(text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(R.string.AddFav)) }
-       }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(onClick = {
+                isFavorite = !isFavorite
+            }) {
+                Text(
+                    text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(
+                        R.string.AddFav
+                    )
+                )
+            }
+        }
     }
 }
 
