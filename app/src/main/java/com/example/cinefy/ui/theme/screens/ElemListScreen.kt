@@ -2,10 +2,14 @@ package com.example.cinefy.ui.theme.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,6 +26,7 @@ import com.example.cinefy.model.DataSource
 import com.example.cinefy.model.Movie
 import com.example.cinefy.ui.theme.componets.MovieCard
 import com.example.compose.extendedLight
+import com.google.ai.client.generativeai.type.content
 
 @Composable
 fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
@@ -29,11 +34,20 @@ fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
         // Uso de MedHeaderComp para la cabecera
         MedHeaderComp(title = stringResource(R.string.listaDePeliculas))
 
-        LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-            items(movies) { movie ->
-                MovieCard(movie)
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(
+                start = 12.dp,
+                top = 16.dp,
+                end = 12.dp,
+                bottom = 16.dp
+            ),
+            content = {
+                items(movies) { movie ->
+                    MovieCard(movie)
+                }
             }
-        }
+        )
     }
 }
 

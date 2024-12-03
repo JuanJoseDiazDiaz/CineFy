@@ -94,23 +94,31 @@ class AboutUsActivity : ComponentActivity() {
         setContent {
             CinefyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        CenterAlignedTopAppBar(
-                            title = {
-                                Text(text = stringResource(id = R.string.title_AboutUs))
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color.Black,
-                                titleContentColor = Color.White
-                            )
-                        )
-                    }
+//                    topBar = {
+//                        CenterAlignedTopAppBar(
+//                            title = {
+//                                Text(text = stringResource(id = R.string.title_AboutUs))
+//                            },
+//                            colors = TopAppBarDefaults.topAppBarColors(
+//                                containerColor = Color.Black,
+//                                titleContentColor = Color.White
+//                            )
+//                        )
+//                    }
                 ) { innerPadding ->
-                   ElemtListScreen(DataSource.movieList(), modifier = Modifier.padding(innerPadding))
+//                    PresentationAboutUs(
+//                        nameApp,
+//                        tematica,
+//                        descripcion,
+//                        version,
+//                        { ContactarCreador(nameApp, tematica, descripcion, version) },
+//                        modifier = Modifier.padding(innerPadding)
+//                    )
+                    ElemtListScreen(DataSource.movieList(), modifier = Modifier.padding(innerPadding))
                 }
             }
         }
-        screenSplash.setKeepOnScreenCondition{false}
+        screenSplash.setKeepOnScreenCondition { false }
     }
 }
 
@@ -122,22 +130,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
 }
 
-//@Composable
-//fun GreetingPreview(onClickSendData: () -> Unit) {
-//    var nameApp: String = "Cinefy"
-//    var tematica: String = "Cinematográfica"
-//    var descripcion: String =
-//        "Cinefy es una aplicación de películas que ofrece recomendaciones personalizadas basadas en " +
-//                "tus gustos y te permite explorar colecciones temáticas, desde clásicos hasta estrenos recientes. " +
-//                "Los usuarios pueden calificar, hacer listas propias, ver dónde están disponibles las películas en streaming y" +
-//                " unirse a una comunidad de cinéfilos para compartir reseñas y descubrir nuevas joyas del cine. " +
-//                "¡Todo lo que necesitas para tu próxima maratón de películas está en Cinefy!"
-//    var version: Float = 12.0f
-//
-//    CinefyTheme {
-//        PresentationAboutUs(nameApp, tematica, descripcion, version, onClickSendData)
-//    }
-//}
 @Composable
 private fun PresentationAboutUs(
     name: String,
@@ -229,6 +221,7 @@ private fun ShowImage(modifier: Modifier = Modifier) {
     )
 
 }
+
 
 
 

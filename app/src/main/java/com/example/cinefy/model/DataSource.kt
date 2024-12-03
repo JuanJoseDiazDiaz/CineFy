@@ -81,6 +81,7 @@ object DataSource {
         if(num <= movies.size) movies.subList(0, num)
         movies
     }
+
     fun getDrawableIdName(title : String) : Int {
         return when (title) {
             "openheimerposter" -> R.drawable.openheimerposter
