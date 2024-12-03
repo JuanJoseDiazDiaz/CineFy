@@ -7,4 +7,6 @@
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="listaDePeliculas">Listas de Películas</string>
     <string name="more_content_desc">Icono</string>
+    <string name="title_activity_elemt_list">ElemtListActivity</string>
+    <string name="DetailFavoritos">Detalles de los Favoritos</string>
 </resources>

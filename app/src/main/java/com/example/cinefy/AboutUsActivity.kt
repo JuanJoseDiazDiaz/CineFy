@@ -94,27 +94,27 @@ class AboutUsActivity : ComponentActivity() {
         setContent {
             CinefyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
-//                    topBar = {
-//                        CenterAlignedTopAppBar(
-//                            title = {
-//                                Text(text = stringResource(id = R.string.title_AboutUs))
-//                            },
-//                            colors = TopAppBarDefaults.topAppBarColors(
-//                                containerColor = Color.Black,
-//                                titleContentColor = Color.White
-//                            )
-//                        )
-//                    }
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = {
+                                Text(text = stringResource(id = R.string.title_AboutUs))
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Black,
+                                titleContentColor = Color.White
+                            )
+                        )
+                    }
                 ) { innerPadding ->
-//                    PresentationAboutUs(
-//                        nameApp,
-//                        tematica,
-//                        descripcion,
-//                        version,
-//                        { ContactarCreador(nameApp, tematica, descripcion, version) },
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-                    ElemtListScreen(DataSource.movieList(), modifier = Modifier.padding(innerPadding))
+                    PresentationAboutUs(
+                        nameApp,
+                        tematica,
+                        descripcion,
+                        version,
+                        { ContactarCreador(nameApp, tematica, descripcion, version) },
+                        modifier = Modifier.padding(innerPadding)
+                    )
+
                 }
             }
         }
