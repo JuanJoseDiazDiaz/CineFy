@@ -11,18 +11,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cinefy.model.DataSource
-import com.example.cinefy.ui.theme.screens.DetailFavScreenContent
-import com.example.cinefy.ui.theme.screens.ui.theme.CinefyTheme
+import com.example.compose.CinefyTheme
 
-class DetailFavActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             CinefyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DetailFavScreenContent(DataSource.movieList().first(), listOf("Genial película!", "Me encantó la trama."), Modifier.padding(innerPadding))
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -30,7 +31,7 @@ class DetailFavActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting5(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier
@@ -39,8 +40,8 @@ fun Greeting5(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview4() {
+fun GreetingPreview() {
     CinefyTheme {
-        DetailFavScreenContent(DataSource.movieList().first(), listOf("Genial película!", "Me encantó la trama."))
+        Greeting("Android")
     }
 }

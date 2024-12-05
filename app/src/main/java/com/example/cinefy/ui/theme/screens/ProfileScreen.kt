@@ -42,19 +42,14 @@ fun ProfileScreenContent(userName: String, userEmail: String, modifier: Modifier
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.TwoTone.AccountCircle,
-            modifier = Modifier.size(100.dp),
-            contentDescription = stringResource(R.string.more_content_desc),
-            tint = MaterialTheme.colorScheme.primary
-        )
+       Image(painter = painterResource(R.drawable.cinefylogo_copy), contentDescription = null, modifier.height(150.dp).width(150.dp))
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = userName, style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = userEmail, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { loggedIn = !loggedIn }) {
-            Text(text = if (loggedIn) "Logout" else "Login")
+            Text(text = if (loggedIn) stringResource(R.string.Logout) else stringResource(R.string.Login))
         }
     }
 }
@@ -62,5 +57,5 @@ fun ProfileScreenContent(userName: String, userEmail: String, modifier: Modifier
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreenContent(userName = "John Doe", userEmail = "johndoe@example.com")
+    ProfileScreenContent(userName = stringResource(R.string.nameUser), userEmail = stringResource(R.string.emailUser))
 }

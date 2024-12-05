@@ -29,36 +29,17 @@ import com.example.cinefy.ui.theme.componets.StandardTextComp
 import com.example.compose.extendedLight
 
 @Composable
-fun DetailItemScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+fun DetailItemScreen(movies: Movie, modifier: Modifier = Modifier) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
 
-    Column(modifier = modifier.fillMaxSize()) {
-        // Uso de MedHeaderComp para la cabecera
+    Column {
         MedHeaderComp3(title = stringResource(R.string.Detail_Item))
-        if (isExpanded) {
-            // Pantalla expandida
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                items(movies) { movie ->
-                    MovieCardDetailWithFavButton(movie)
-                }
-            }
+        if (!isExpanded) {
+            MovieCardDetailWithFavButton(movies)
         } else {
-            // Pantalla compacta
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                items(movies) { movie ->
-                    MovieCardDetailWithFavButton(movie)
-                }
-            }
+            MovieCardDetailWithFavButton(movies)
         }
     }
 }
@@ -68,15 +49,12 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
     var isFavorite by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MovieCardDetail(movie)
         Spacer(modifier = Modifier.height(8.dp))
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onClick = {
@@ -96,7 +74,25 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
 @Preview(showBackground = true)
 @Composable
 fun HeroListScreenPreview3() {
-    DetailItemScreen(DataSource.movieList())
+    // Crea una instancia de Movie con datos de ejemplo.
+    val exampleMovie = Movie(
+        rank = 32,
+        title = "OppenHeimer",
+        descripcion = "The story of American scientist, J. Robert Oppenheimer, " +
+                "and his role in the development of the atomic bomb.",
+        image = "openheimerposter",
+        bigimage = "openheimerposter",
+        genre = "History",
+        thumbanil = "openheimerposter",
+        ranting = 8.6f,
+        id = "top32",
+        yearEstreno = 2023,
+        imdbid = "tt15398776",
+        imdbid_link = "https://www.imdb.com/title/tt15398776"
+
+
+    )
+    DetailItemScreen(movies = exampleMovie)
 }
 
 val LocalExtendedColorScheme3 = staticCompositionLocalOf {

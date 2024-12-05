@@ -30,17 +30,16 @@ import com.example.cinefy.model.Movie
 @Composable
 fun MovieCardDetail(Movie: Movie) {
     Row {
+        Column (horizontalAlignment = Alignment.CenterHorizontally){
+            ImageComp(drawable = DataSource.getDrawableIdName(Movie.image))
+        }
         Card(
             modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .fillMaxHeight(),
+                .padding(8.dp),
             shape = MaterialTheme.shapes.medium,
 
             ) {
-            Row {
-                ImageComp(drawable = DataSource.getDrawableIdName(Movie.image))
-                Spacer(modifier = Modifier.padding(8.dp))
+            Column {
                 Column {
                     StandardTextComp(
                         text = "Titulo: ${Movie.title}",

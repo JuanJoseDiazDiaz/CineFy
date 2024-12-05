@@ -1,4 +1,5 @@
-package com.example.cinefy
+package com.example.cinefy.ui.theme.screens
+
 
 import DetailItemScreen
 import FavListScreenContent
@@ -35,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.cinefy.R
 import com.example.cinefy.model.DataSource
 import com.example.cinefy.ui.theme.componets.StandardButtonImage
 import com.example.cinefy.ui.theme.screens.DetailFavScreenContent
@@ -221,9 +223,5 @@ private fun ShowImage(modifier: Modifier = Modifier) {
             .width(800.dp)
             .height(800.dp)
     )
-
 }
-
-
-
 

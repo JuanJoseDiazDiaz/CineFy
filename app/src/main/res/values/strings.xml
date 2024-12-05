@@ -16,4 +16,8 @@
     <string name="nameUser">Juan José</string>
     <string name="emailUser">openHpuertas@gmail.com</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="Comentarios">Comentarios</string>
+    <string name="Login">Login</string>
+    <string name="Logout">Logout</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
