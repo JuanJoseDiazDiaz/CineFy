@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,7 +40,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.cinefy.R
 import com.example.cinefy.model.DataSource
 import com.example.cinefy.ui.theme.componets.StandardButtonImage
-import com.example.cinefy.ui.theme.screens.DetailFavScreenContent
 import com.example.cinefy.ui.theme.screens.ElemtListScreen
 import com.example.compose.CinefyTheme
 
@@ -144,72 +144,144 @@ private fun PresentationAboutUs(
     modifier: Modifier = Modifier
 
 ) {
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .background(color = colorResource(id = R.color.Naranja_Pastel)),
-            horizontalArrangement = Arrangement.Center
+    val configuration = LocalConfiguration.current
+    val isExpanded = configuration.screenWidthDp > 600
+    if (isExpanded) {
+        Column(
+            modifier = modifier.fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .background(color = colorResource(id = R.color.Naranja_Pastel)),
+                horizontalArrangement = Arrangement.Center
 
-        ) {
-            Text(text = name, style = TextStyle(color = Color.White, fontSize = 27.sp))
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text(
-                text = stringResource(id = R.string.Tematica) + tematica,
-                style = TextStyle(fontSize = 22.sp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text(
-                text = stringResource(id = R.string.Descripcion) + descripcion,
-                style = TextStyle(fontSize = 20.sp)
-            )
-        }
-        Spacer(modifier = Modifier.padding(8.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.Version) + version,
-                style = TextStyle(fontSize = 22.sp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            StandardButtonImage(icon = painterResource(id = R.drawable.icon_share)) {
-                onClickSendData()
+            ) {
+                Text(text = name, style = TextStyle(color = Color.White, fontSize = 27.sp))
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = stringResource(id = R.string.Tematica) + tematica,
+                    style = TextStyle(fontSize = 22.sp)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = stringResource(id = R.string.Descripcion) + descripcion,
+                    style = TextStyle(fontSize = 20.sp)
+                )
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.Version) + version,
+                    style = TextStyle(fontSize = 22.sp)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                StandardButtonImage(icon = painterResource(id = R.drawable.icon_share)) {
+                    onClickSendData()
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ShowImage()
             }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.Center
+    } else {
+        Column(
+            modifier = modifier.fillMaxSize()
         ) {
-            ShowImage()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .background(color = colorResource(id = R.color.Naranja_Pastel)),
+                horizontalArrangement = Arrangement.Center
+
+            ) {
+                Text(text = name, style = TextStyle(color = Color.White, fontSize = 27.sp))
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = stringResource(id = R.string.Tematica) + tematica,
+                    style = TextStyle(fontSize = 22.sp)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = stringResource(id = R.string.Descripcion) + descripcion,
+                    style = TextStyle(fontSize = 20.sp)
+                )
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(id = R.string.Version) + version,
+                    style = TextStyle(fontSize = 22.sp)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                StandardButtonImage(icon = painterResource(id = R.drawable.icon_share)) {
+                    onClickSendData()
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ShowImage()
+            }
         }
     }
+
 }
 
 @Composable

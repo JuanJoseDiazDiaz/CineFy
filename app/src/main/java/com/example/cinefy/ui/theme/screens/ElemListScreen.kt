@@ -38,7 +38,7 @@ fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
         // Uso de MedHeaderComp para la cabecera
         MedHeaderComp(title = stringResource(R.string.listaDePeliculas))
 
-        if (!isExpanded) {
+        if (isExpanded) {
             // Pantalla expandida
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),

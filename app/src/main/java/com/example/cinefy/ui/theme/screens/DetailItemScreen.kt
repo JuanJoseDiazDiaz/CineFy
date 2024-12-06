@@ -33,23 +33,33 @@ fun DetailItemScreen(movies: Movie, modifier: Modifier = Modifier) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
-
-    Column {
-        MedHeaderComp3(title = stringResource(R.string.Detail_Item))
-        if (!isExpanded) {
-            MovieCardDetailWithFavButton(movies)
-        } else {
-            MovieCardDetailWithFavButton(movies)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, // Centrar contenido en el eje horizontal
+            verticalArrangement = Arrangement.Center // Centrar contenido en el eje vertical
+        ) {
+            MedHeaderComp3(title = stringResource(R.string.Detail_Item))
+            if (isExpanded) {
+                MovieCardDetailWithFavButton(movies)
+            } else {
+                MovieCardDetailWithFavButton(movies)
+            }
         }
     }
 }
+
 
 @Composable
 fun MovieCardDetailWithFavButton(movie: Movie) {
     var isFavorite by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .padding(8.dp),
+            .padding(6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MovieCardDetail(movie)
@@ -71,7 +81,7 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 400)
 @Composable
 fun HeroListScreenPreview3() {
     // Crea una instancia de Movie con datos de ejemplo.
@@ -94,6 +104,7 @@ fun HeroListScreenPreview3() {
     )
     DetailItemScreen(movies = exampleMovie)
 }
+
 
 val LocalExtendedColorScheme3 = staticCompositionLocalOf {
     extendedLight //tomar cualquiera de los creados como referencia.
