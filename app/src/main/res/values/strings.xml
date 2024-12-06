@@ -20,4 +20,6 @@
     <string name="Login">Login</string>
     <string name="Logout">Logout</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="VerDetalles">Ver Detalles</string>
+    <string name="add_comment">Añadir Comentario</string>
 </resources>

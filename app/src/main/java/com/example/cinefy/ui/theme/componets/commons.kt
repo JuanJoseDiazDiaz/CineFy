@@ -2,9 +2,14 @@ package com.example.cinefy.ui.theme.componets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -21,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.cinefy.R
+import com.example.cinefy.model.Movie
+import com.example.cinefy.ui.theme.screens.MedHeaderComp
 
 @Composable
 fun StandardButtonImage(icon : Painter, modifier: Modifier = Modifier, onClick: () -> Unit) {
@@ -72,10 +79,26 @@ fun StandardTextComp(text: String, modifier: Modifier = Modifier, style  : andro
     )
 }
 
-@Composable
-fun ResponsiveScreen(content: @Composable (isExpanded: Boolean) -> Unit) {
-    val configuration = LocalConfiguration.current
-    val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
 
-    content(isExpanded)
+@Composable
+fun ListCompactScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+            items(movies) { movie ->
+               MovieCard(movie)
+            }
+        }
+    }
+}
+
+@Composable
+fun ListMedExpScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize()) {
+        MedHeaderComp(title = "Pantalla media o grande")
+        LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+            items(movies) { movie ->
+                MovieCard(movie)
+            }
+        }
+    }
 }
