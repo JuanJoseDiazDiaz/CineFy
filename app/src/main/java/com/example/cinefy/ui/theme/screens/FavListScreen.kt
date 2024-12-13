@@ -35,9 +35,9 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     var favorites by remember { mutableStateOf(favoriteMovies) }
-    if(isExpanded){
-        Box(modifier = modifier.padding(10.dp)){
-            MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+    Column (modifier = modifier.fillMaxSize()){
+        MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+        if (isExpanded) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(
@@ -48,6 +48,7 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
                 ),
                 content = {
                     items(favorites) { movie ->
+
                         MovieCardWithRemoveButton(
                             movie,
                             onRemove = { removedMovie ->
@@ -56,10 +57,8 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
                     }
                 }
             )
-        }
-    }else{
-        Box(modifier = modifier.padding(10.dp)){
-            MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+
+        } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(
@@ -70,6 +69,7 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
                 ),
                 content = {
                     items(favorites) { movie ->
+
                         MovieCardWithRemoveButton(
                             movie,
                             onRemove = { removedMovie ->
@@ -78,6 +78,7 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
                     }
                 }
             )
+
         }
     }
 

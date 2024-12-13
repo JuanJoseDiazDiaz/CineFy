@@ -234,8 +234,8 @@ private fun ShowImage(modifier: Modifier = Modifier) {
     // Imagen de tamaño fijo de 250dp de ancho
     Image(
         painter = image, contentDescription = null, modifier = Modifier
-            .width(800.dp)
-            .height(800.dp)
+            .width(400.dp)
+            .height(400.dp)
     )
 }
 

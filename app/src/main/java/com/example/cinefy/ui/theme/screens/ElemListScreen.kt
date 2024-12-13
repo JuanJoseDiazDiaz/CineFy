@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +33,7 @@ import com.example.compose.extendedLight
 fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
-    val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
+    val isExpanded = configuration.screenWidthDp > 600
 
     Column(modifier = modifier.fillMaxSize()) {
         // Uso de MedHeaderComp para la cabecera

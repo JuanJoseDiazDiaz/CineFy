@@ -15,11 +15,13 @@
     <string name="title_activity_detail_fav">DetailFavActivity</string>
     <string name="nameUser">Juan José</string>
     <string name="emailUser">openHpuertas@gmail.com</string>
-    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile">Perfil</string>
     <string name="Comentarios">Comentarios</string>
     <string name="Login">Login</string>
     <string name="Logout">Logout</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="VerDetalles">Ver Detalles</string>
     <string name="add_comment">Añadir Comentario</string>
+    <string name="name_Fav">Favoritos</string>
+    <string name="Movie">Películas</string>
 </resources>

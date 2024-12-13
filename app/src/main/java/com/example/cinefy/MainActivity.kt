@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinefy.model.DataSource
 import com.example.cinefy.model.Movie
+import com.example.cinefy.ui.theme.componets.BottomNavigationBar
 import com.example.cinefy.ui.theme.screens.AboutUsScreen
 import com.example.cinefy.ui.theme.screens.ContactarCreadorIntent
 import com.example.cinefy.ui.theme.screens.ElemtListScreen
@@ -48,8 +49,8 @@ class MainActivity : ComponentActivity() {
             CinefyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-//                        if (windowSize == WindowWidthSizeClass.Compact && currentRoute?.contains("details") == false)
-
+                        if (windowSize == WindowWidthSizeClass.Compact && currentRoute?.contains("details") == false)
+                            BottomNavigationBar(navController, currentRoute)
                     }) { innerPadding ->
                     val exampleMovie = Movie(
                         rank = 32,
@@ -67,12 +68,9 @@ class MainActivity : ComponentActivity() {
                         imdbid_link = "https://www.imdb.com/title/tt15398776"
                     )
                     // todo -> Navegación
-                    NavHost(navController = navController, startDestination = "details_fav/{movie_title}") {
+                    NavHost(navController = navController, startDestination = "lista_Fav") {
                         composable("movie_list") {
-                            ElemtListScreen(
-                                DataSource.movieList(),
-                                modifier = Modifier.padding(innerPadding)
-                            ) // Debo cambiarlo a una pelicula solo
+
                         }
                         composable("lista_Fav") {
                             FavListScreenContent(
