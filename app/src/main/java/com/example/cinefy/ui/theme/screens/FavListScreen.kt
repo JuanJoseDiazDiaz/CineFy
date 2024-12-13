@@ -36,45 +36,49 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
     val isExpanded = configuration.screenWidthDp > 600
     var favorites by remember { mutableStateOf(favoriteMovies) }
     if(isExpanded){
-        MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 50.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),
-            content = {
-                items(favorites) { movie ->
-                    MovieCardWithRemoveButton(
-                        movie,
-                        onRemove = { removedMovie ->
-                            favorites = favorites.filter { it != removedMovie }
-                        })
+        Box(modifier = modifier.padding(10.dp)){
+            MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(
+                    start = 12.dp,
+                    top = 50.dp,
+                    end = 12.dp,
+                    bottom = 16.dp
+                ),
+                content = {
+                    items(favorites) { movie ->
+                        MovieCardWithRemoveButton(
+                            movie,
+                            onRemove = { removedMovie ->
+                                favorites = favorites.filter { it != removedMovie }
+                            })
+                    }
                 }
-            }
-        )
+            )
+        }
     }else{
-        MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 50.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),
-            content = {
-                items(favorites) { movie ->
-                    MovieCardWithRemoveButton(
-                        movie,
-                        onRemove = { removedMovie ->
-                            favorites = favorites.filter { it != removedMovie }
-                        })
+        Box(modifier = modifier.padding(10.dp)){
+            MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(
+                    start = 12.dp,
+                    top = 50.dp,
+                    end = 12.dp,
+                    bottom = 16.dp
+                ),
+                content = {
+                    items(favorites) { movie ->
+                        MovieCardWithRemoveButton(
+                            movie,
+                            onRemove = { removedMovie ->
+                                favorites = favorites.filter { it != removedMovie }
+                            })
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 
 }

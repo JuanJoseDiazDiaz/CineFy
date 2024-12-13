@@ -43,96 +43,39 @@ import com.example.cinefy.ui.theme.componets.StandardButtonImage
 import com.example.cinefy.ui.theme.screens.ElemtListScreen
 import com.example.compose.CinefyTheme
 
-class AboutUsActivity : ComponentActivity() {
-
-    companion object {
-        private const val ASUNTO = "EXTRA_SUBJECT"
-        private const val CUERPO = "EXTRA_TEXT"
-    }
-    // todo -> Metodo ContactarCreador:
-    /**
-     * Este metodo realiza la función de enviar los datos obtenidos atraves de un intent,
-     * de forma que cuando se habrá la aplicación que desees de envios salga un asunto concreto y un cuerpo concreto
-     * */
-    fun ContactarCreador(
-        nameApp: String,
-        tematica: String,
-        descripcion: String,
-        version: Float,
-        modifier: Modifier = Modifier
-    ) {
-        val asunto = "La aplicación llamada es: ${nameApp}, tengo dudas o inconvenientes con ella"
-        val tematica = "La tematica es la siguiente: ${tematica}"
-        val descripcion = "Esta es la descripcion de la app: ${descripcion}"
-        val version = "La versión es: ${version}"
-
-        // Configura un Intent de tipo "SEND" para compartir texto plano
-        val enviarDatos = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(ASUNTO, asunto) // Asunto del mensaje
-            putExtra(CUERPO, tematica) // Cuerpo del mensaje
-            putExtra(CUERPO, descripcion) // Cuerpo del mensaje
-            putExtra(CUERPO, version) // Cuerpo del mensaje
-            type = "text/plain"
-        }
-        // Inicia el Intent permitiendo al usuario elegir la aplicación para compartir los datos
-        startActivity(Intent.createChooser(enviarDatos, "Enviar datos a través de..."))
-    }
-
-    // todo -> Creacion de variables necesarias para el metodo PresentationAboutUs
-    private var nameApp: String = "Cinefy"
-    private var tematica: String = "Cinematográfica"
-    private var descripcion: String =
-        "Cinefy es una aplicación de películas que ofrece recomendaciones personalizadas basadas en " +
-                "tus gustos y te permite explorar colecciones temáticas, desde clásicos hasta estrenos recientes. " +
-                "Los usuarios pueden calificar, hacer listas propias, ver dónde están disponibles las películas en streaming y" +
-                " unirse a una comunidad de cinéfilos para compartir reseñas y descubrir nuevas joyas del cine. " +
-                "¡Todo lo que necesitas para tu próxima maratón de películas está en Cinefy!"
-    private var version: Float = 12.0f
-
-
     @OptIn(ExperimentalMaterial3Api::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val screenSplash = installSplashScreen()
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            CinefyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        CenterAlignedTopAppBar(
-                            title = {
-                                Text(text = stringResource(id = R.string.title_AboutUs))
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = Color.Black,
-                                titleContentColor = Color.White
-                            )
-                        )
-                    }
-                ) { innerPadding ->
-                    PresentationAboutUs(
-                        nameApp,
-                        tematica,
-                        descripcion,
-                        version,
-                        { ContactarCreador(nameApp, tematica, descripcion, version) },
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
-        screenSplash.setKeepOnScreenCondition { false }
-    }
-}
+    @Composable
+    fun AboutUsScreen(
+        modifier: Modifier = Modifier,
+        nameApp: String = "Cinefy",
+        tematica: String = "Cinematográfica",
+        descripcion: String = "Cinefy es una aplicación de películas que ofrece recomendaciones personalizadas basadas en tus gustos y te permite explorar colecciones temáticas, desde clásicos hasta estrenos recientes. Los usuarios pueden calificar, hacer listas propias, ver dónde están disponibles las películas en streaming y unirse a una comunidad de cinéfilos para compartir reseñas y descubrir nuevas joyas del cine. ¡Todo lo que necesitas para tu próxima maratón de películas está en Cinefy!",
+        version: Float = 12.0f,
+        onClickSendData: (nameApp: String, tematica: String, descripcion: String, version: Float) -> Unit
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    ) {
+        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.title_AboutUs))
+                }, colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Black, titleContentColor = Color.White
+                )
+            )
+        }) { innerPadding ->
+            PresentationAboutUs(
+                name = nameApp,
+                tematica = tematica,
+                descripcion = descripcion,
+                version = version,
+                onClickSendData = { onClickSendData(nameApp, tematica, descripcion, version) },
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
+    }
+
+
+
 
 @Composable
 private fun PresentationAboutUs(
@@ -147,6 +90,7 @@ private fun PresentationAboutUs(
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     if (isExpanded) {
+        MedHeaderComp(stringResource(R.string.title_AboutUs))
         Column(
             modifier = modifier.fillMaxSize()
         ) {
@@ -289,11 +233,30 @@ private fun ShowImage(modifier: Modifier = Modifier) {
     val image = painterResource(id = R.drawable.cinefylogo) // Carga la imagen a mostrar
     // Imagen de tamaño fijo de 250dp de ancho
     Image(
-        painter = image,
-        contentDescription = null,
-        modifier = Modifier
+        painter = image, contentDescription = null, modifier = Modifier
             .width(800.dp)
             .height(800.dp)
     )
+}
+
+fun ContactarCreadorIntent(
+    nameApp: String,
+    tematica: String,
+    descripcion: String,
+    version: Float
+): Intent {
+    val ASUNTO = "EXTRA_SUBJECT"
+    val CUERPO = "EXTRA_TEXT"
+    val asunto = "La aplicación llamada es: $nameApp, tengo dudas o inconvenientes con ella"
+    val tematicaInfo = "La temática es la siguiente: $tematica"
+    val descripcionInfo = "Esta es la descripción de la app: $descripcion"
+    val versionInfo = "La versión es: $version"
+
+    return Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(ASUNTO, asunto)
+        putExtra(CUERPO, "$tematicaInfo\n$descripcionInfo\n$versionInfo")
+        type = "text/plain"
+    }
 }
 

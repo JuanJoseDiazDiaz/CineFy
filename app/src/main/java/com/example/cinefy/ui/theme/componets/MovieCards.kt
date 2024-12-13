@@ -40,7 +40,6 @@ fun MovieCard(Movie: Movie) {
             modifier = Modifier
                 .padding(8.dp),
             shape = MaterialTheme.shapes.medium,
-
             ) {
             Row(
                 horizontalArrangement = Arrangement.Center,

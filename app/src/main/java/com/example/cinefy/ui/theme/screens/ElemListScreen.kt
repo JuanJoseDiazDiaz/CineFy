@@ -51,7 +51,8 @@ fun ElemtListScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
             )
         } else {
             // Pantalla compacta
-            LazyColumn(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
                 contentPadding = PaddingValues(12.dp),
                 content = {
                     items(movies) { movie ->

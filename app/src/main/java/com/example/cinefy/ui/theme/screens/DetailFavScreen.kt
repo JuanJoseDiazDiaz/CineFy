@@ -3,11 +3,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.twotone.AccountCircle
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -91,7 +93,23 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
         // Espacio entre el texto y la lista de elementos
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(stringResource(R.string.Comentarios), style = MaterialTheme.typography.headlineMedium,)
+            Row {
+                Text(stringResource(R.string.Comentarios), style = MaterialTheme.typography.headlineMedium,)
+                Spacer(modifier = Modifier.width(5.dp))
+                FloatingActionButton(
+                    onClick = {
+                        // Acción al hacer clic en el FAB
+                    },
+                    modifier = Modifier.size(48.dp), // Ajusta el tamaño del FAB
+                    containerColor = MaterialTheme.colorScheme.primary // Color del botón
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle, // Ícono del FAB
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary // Color del ícono
+                    )
+                }
+            }
         }
 
         // LazyColumn interna para mostrar una lista de elementos (por ejemplo, comentarios)
@@ -108,6 +126,7 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
                     text = "Magnífica dirección y actuación en una historia conmovedora.",
                     modifier = Modifier.padding(8.dp)
                 )
+
             }
         }
         items(1) { index ->
@@ -123,6 +142,7 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
                     text = "Una película impactante y profunda sobre la ciencia y la moral.",
                     modifier = Modifier.padding(8.dp)
                 )
+
             }
 
         }
