@@ -35,9 +35,31 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     var favorites by remember { mutableStateOf(favoriteMovies) }
-    Column (modifier = modifier.fillMaxSize()){
-        MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
-        if (isExpanded) {
+    if(isExpanded){
+       Column (modifier = modifier.padding(10.dp)){
+           MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+           LazyVerticalGrid(
+               columns = GridCells.Fixed(2),
+               contentPadding = PaddingValues(
+                   start = 12.dp,
+                   top = 50.dp,
+                   end = 12.dp,
+                   bottom = 16.dp
+               ),
+               content = {
+                   items(favorites) { movie ->
+                       MovieCardWithRemoveButton(
+                           movie,
+                           onRemove = { removedMovie ->
+                               favorites = favorites.filter { it != removedMovie }
+                           })
+                   }
+               }
+           )
+       }
+    }else{
+        Column (modifier = modifier.padding(10.dp)){
+            MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(
@@ -48,7 +70,6 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
                 ),
                 content = {
                     items(favorites) { movie ->
-
                         MovieCardWithRemoveButton(
                             movie,
                             onRemove = { removedMovie ->
@@ -57,28 +78,6 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
                     }
                 }
             )
-
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(
-                    start = 12.dp,
-                    top = 50.dp,
-                    end = 12.dp,
-                    bottom = 16.dp
-                ),
-                content = {
-                    items(favorites) { movie ->
-
-                        MovieCardWithRemoveButton(
-                            movie,
-                            onRemove = { removedMovie ->
-                                favorites = favorites.filter { it != removedMovie }
-                            })
-                    }
-                }
-            )
-
         }
     }
 
@@ -86,6 +85,7 @@ fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modif
 
 @Composable
 fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,7 +94,7 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
     ) {
         MovieCardDetail(movie)
         Spacer(modifier = Modifier.height(8.dp))
-        IconButton(onClick = { onRemove(movie) }) {
+        IconButton(onClick = { showDialog = true }) {
             Icon(
                 imageVector = Icons.TwoTone.Delete,
                 modifier = Modifier.size(48.dp),
@@ -103,7 +103,29 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
             )
         }
     }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Confirmación") },
+            text = { Text("¿Estás seguro de que deseas eliminar esta película de tus favoritos?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onRemove(movie)
+                    showDialog = false
+                }) {
+                    Text("Sí, estoy seguro")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("No, cancelar")
+                }
+            }
+        )
+    }
 }
+
 
 @Preview(showBackground = true)
 @Composable

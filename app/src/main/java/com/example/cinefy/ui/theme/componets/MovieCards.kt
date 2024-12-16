@@ -1,6 +1,7 @@
 package com.example.cinefy.ui.theme.componets
 
 
+import android.provider.CalendarContract.Colors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,16 @@ import androidx.compose.material.icons.twotone.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.res.stringResource
@@ -35,12 +42,13 @@ import com.example.cinefy.model.Movie
 
 @Composable
 fun MovieCard(Movie: Movie) {
+    var fav_Movie by remember { mutableStateOf(false) }
     Row {
         Card(
             modifier = Modifier
                 .padding(8.dp),
             shape = MaterialTheme.shapes.medium,
-            ) {
+        ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
             ) {
@@ -53,13 +61,16 @@ fun MovieCard(Movie: Movie) {
                     )
                     Box {
                         Row {
-                            IconButton(onClick = {
-                            }, Modifier.size(48.dp)) {
+                            IconButton(
+                                onClick = { fav_Movie = !fav_Movie },
+                                modifier = Modifier.size(48.dp),
+                                colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
+                            ) {
                                 Icon(
                                     imageVector = Icons.TwoTone.Favorite,
                                     modifier = Modifier.size(40.dp),
                                     contentDescription = stringResource(R.string.more_content_desc),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = if (fav_Movie) Color.Red else Color.Gray
                                 )
                             }
 

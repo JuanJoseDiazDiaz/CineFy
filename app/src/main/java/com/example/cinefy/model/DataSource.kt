@@ -91,4 +91,7 @@ object DataSource {
             else -> R.drawable.cinefylogo
         }
     }
+    fun findMovieByTitle(movies: List<Movie>, title: String) : Movie?{
+        return movies.find { it.title.equals(title, ignoreCase = true) }
+    }
 }

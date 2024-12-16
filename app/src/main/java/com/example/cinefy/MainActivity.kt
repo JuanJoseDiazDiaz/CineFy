@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,7 +26,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinefy.model.DataSource
+import com.example.cinefy.model.DataSource.findMovieByTitle
 import com.example.cinefy.model.Movie
+import com.example.cinefy.ui.theme.screens.AboutUsScreen
+import com.example.cinefy.ui.theme.screens.ContactarCreadorIntent
+import com.example.cinefy.ui.theme.screens.ElemtListScreen
+import com.example.cinefy.ui.theme.screens.ProfileScreenContent
 import com.example.cinefy.ui.theme.componets.BottomNavigationBar
 import com.example.cinefy.ui.theme.screens.AboutUsScreen
 import com.example.cinefy.ui.theme.screens.ContactarCreadorIntent
@@ -40,7 +46,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val movie = DataSource.getListXtimes(4)
+            val movies = DataSource.movieList()
             val windowSize = getWindowSizeClass(LocalContext.current as Activity)
             val navController = rememberNavController()
             val currentRoute by navController.currentBackStackEntryFlow.map { it.destination.route }
@@ -67,14 +73,16 @@ class MainActivity : ComponentActivity() {
                         imdbid = "tt15398776",
                         imdbid_link = "https://www.imdb.com/title/tt15398776"
                     )
-                    // todo -> Navegación
-                    NavHost(navController = navController, startDestination = "lista_Fav") {
+                    NavHost(navController = navController, startDestination = "movie_list") {
                         composable("movie_list") {
-
+                            ElemtListScreen(
+                                movies,
+                                modifier = Modifier.padding(innerPadding)
+                            )
                         }
                         composable("lista_Fav") {
                             FavListScreenContent(
-                                favoriteMovies = DataSource.movieList(),
+                                favoriteMovies = movies,
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
@@ -101,13 +109,35 @@ class MainActivity : ComponentActivity() {
 
                             )
                         }
-                        composable("details/{movie_title}") {
-                            DetailItemScreen(movies = exampleMovie,  modifier = Modifier.padding(innerPadding))
+                        composable("details/{movie_title}") { backStackEntry ->
+                            val movieTitle = backStackEntry.arguments?.getString("movie_title")
+                            val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
+                            DetailItemScreen(
+                                movies = movie,
+                                modifier = Modifier.padding(innerPadding)
+                            )
                         }
-                        composable("details_fav/{movie_title}") {
-                            DetailFavScreen(movies = exampleMovie, modifier = Modifier.padding(innerPadding))
+                        composable("details_fav/{movie_title}") { backStackEntry ->
+                            val movieTitle = backStackEntry.arguments?.getString("movie_title")
+                            val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
+                            DetailFavScreen(
+                                movies = movie,
+                                modifier = Modifier.padding(innerPadding)
+                            )
                         }
                     }
+                    // Todo -> BuscarPeliculas
+                    // Para Buscar Peliculas mediante nombre se hace con este metodo
+//                    LaunchedEffect(key1 = true) {
+//                        // Función de búsqueda y navegación
+//                        val movieTitleToFind = "OppenHeimer"
+//                        val foundMovie = DataSource.findMovieByTitle(movies, movieTitleToFind)
+//                        if (foundMovie != null) {
+//                            navController.navigate("details/${foundMovie.title}")
+//                        } else {
+//                            println("Película no encontrada.")
+//                        }
+//                    }
                 }
             }
         }

@@ -1,6 +1,8 @@
 package com.example.cinefy.ui.theme.screens
 
 
+
+
 import DetailItemScreen
 import FavListScreenContent
 import android.content.Intent
@@ -43,36 +45,36 @@ import com.example.cinefy.ui.theme.componets.StandardButtonImage
 import com.example.cinefy.ui.theme.screens.ElemtListScreen
 import com.example.compose.CinefyTheme
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun AboutUsScreen(
-        modifier: Modifier = Modifier,
-        nameApp: String = "Cinefy",
-        tematica: String = "Cinematográfica",
-        descripcion: String = "Cinefy es una aplicación de películas que ofrece recomendaciones personalizadas basadas en tus gustos y te permite explorar colecciones temáticas, desde clásicos hasta estrenos recientes. Los usuarios pueden calificar, hacer listas propias, ver dónde están disponibles las películas en streaming y unirse a una comunidad de cinéfilos para compartir reseñas y descubrir nuevas joyas del cine. ¡Todo lo que necesitas para tu próxima maratón de películas está en Cinefy!",
-        version: Float = 12.0f,
-        onClickSendData: (nameApp: String, tematica: String, descripcion: String, version: Float) -> Unit
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AboutUsScreen(
+    modifier: Modifier = Modifier,
+    nameApp: String = "Cinefy",
+    tematica: String = "Cinematográfica",
+    descripcion: String = "Cinefy es una aplicación de películas que ofrece recomendaciones personalizadas basadas en tus gustos y te permite explorar colecciones temáticas, desde clásicos hasta estrenos recientes. Los usuarios pueden calificar, hacer listas propias, ver dónde están disponibles las películas en streaming y unirse a una comunidad de cinéfilos para compartir reseñas y descubrir nuevas joyas del cine. ¡Todo lo que necesitas para tu próxima maratón de películas está en Cinefy!",
+    version: Float = 12.0f,
+    onClickSendData: (nameApp: String, tematica: String, descripcion: String, version: Float) -> Unit
 
-    ) {
-        Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.title_AboutUs))
-                }, colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black, titleContentColor = Color.White
-                )
+) {
+    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(text = stringResource(id = R.string.title_AboutUs))
+            }, colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Black, titleContentColor = Color.White
             )
-        }) { innerPadding ->
-            PresentationAboutUs(
-                name = nameApp,
-                tematica = tematica,
-                descripcion = descripcion,
-                version = version,
-                onClickSendData = { onClickSendData(nameApp, tematica, descripcion, version) },
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
+        )
+    }) { innerPadding ->
+        PresentationAboutUs(
+            name = nameApp,
+            tematica = tematica,
+            descripcion = descripcion,
+            version = version,
+            onClickSendData = { onClickSendData(nameApp, tematica, descripcion, version) },
+            modifier = Modifier.padding(innerPadding)
+        )
     }
+}
 
 
 
@@ -234,8 +236,8 @@ private fun ShowImage(modifier: Modifier = Modifier) {
     // Imagen de tamaño fijo de 250dp de ancho
     Image(
         painter = image, contentDescription = null, modifier = Modifier
-            .width(400.dp)
-            .height(400.dp)
+            .width(300.dp)
+            .height(300.dp)
     )
 }
 
@@ -259,4 +261,3 @@ fun ContactarCreadorIntent(
         type = "text/plain"
     }
 }
-

@@ -24,7 +24,7 @@ fun BottomNavigationBar(navController: NavController, currentRoute: String?) {
             BottomNavItem("movie_list", Icons.AutoMirrored.Filled.List, stringResource(R.string.Movie)),
             BottomNavItem("lista_Fav", Icons.Default.Favorite, stringResource(R.string.name_Fav)),
             BottomNavItem("aboutUs", Icons.Default.Info, stringResource(R.string.title_AboutUs)),
-                    BottomNavItem("pag_Profile", Icons.Default.Person, stringResource(R.string.title_activity_profile))
+            BottomNavItem("pag_Profile", Icons.Default.Person, stringResource(R.string.title_activity_profile))
         )
         items.forEach { item ->
             NavigationBarItem(
