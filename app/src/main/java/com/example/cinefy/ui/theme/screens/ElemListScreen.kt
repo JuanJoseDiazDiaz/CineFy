@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.cinefy.R
 import com.example.cinefy.model.DataSource
 import com.example.cinefy.model.Movie
@@ -21,7 +23,11 @@ import com.example.cinefy.ui.theme.componets.MovieCard
 import com.example.compose.extendedLight
 
 @Composable
-fun ElemtListScreen(movies: List<Movie>, modifier: Modifier = Modifier) {
+fun ElemtListScreen(
+    movies: List<Movie>,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
@@ -45,7 +51,9 @@ fun ElemtListScreen(movies: List<Movie>, modifier: Modifier = Modifier) {
                 contentPadding = PaddingValues(12.dp),
                 content = {
                     items(filteredMovies) { movie ->
-                        MovieCard(movie)
+                        MovieCard(movie) {
+                            navController.navigate("details_fav/${movie.title}")
+                        }
                     }
                 }
             )
@@ -56,7 +64,9 @@ fun ElemtListScreen(movies: List<Movie>, modifier: Modifier = Modifier) {
                 contentPadding = PaddingValues(12.dp),
                 content = {
                     items(filteredMovies) { movie ->
-                        MovieCard(movie)
+                        MovieCard(movie) {
+                            navController.navigate("details_fav/${movie.title}")
+                        }
                     }
                 }
             )
@@ -64,22 +74,10 @@ fun ElemtListScreen(movies: List<Movie>, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        placeholder = { Text(stringResource(R.string.search_placeholder)) }
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun HeroListScreenPreview() {
-    ElemtListScreen(DataSource.movieList())
+//    ElemtListScreen(DataSource.movieList())
 }
 
 val LocalExtendedColorScheme = staticCompositionLocalOf {
@@ -156,5 +154,37 @@ fun MedHeaderCompConBuscador(title: String, searchQuery: String, onQueryChange: 
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
             placeholder = { Text(stringResource(R.string.search_placeholder)) })
+    }
+}
+
+@Composable
+fun MedHeaderCompDetail(title: String, navController: NavController) {
+    val extendedColorScheme = LocalExtendedColorScheme.current
+    Surface(
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .fillMaxWidth(),
+        shadowElevation = 2.dp,
+        shape = MaterialTheme.shapes.medium,
+        color = extendedColorScheme.customHeader.color,
+        contentColor = extendedColorScheme.customHeader.onColor
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+        ) {
+            // Aquí no estaría mal la verdad
+            IconButton(onClick = { navController.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = null
+                )
+            }
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = title,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
     }
 }

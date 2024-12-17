@@ -2,6 +2,7 @@ package com.example.cinefy.ui.theme.componets
 
 
 import android.provider.CalendarContract.Colors
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,12 +42,13 @@ import com.example.cinefy.model.Movie
 
 
 @Composable
-fun MovieCard(Movie: Movie) {
+fun MovieCard(Movie: Movie, onClick: () -> Unit) {
     var fav_Movie by remember { mutableStateOf(false) }
     Row {
         Card(
             modifier = Modifier
-                .padding(8.dp),
+                .padding(8.dp)
+                .clickable { onClick()},
             shape = MaterialTheme.shapes.medium,
         ) {
             Row(

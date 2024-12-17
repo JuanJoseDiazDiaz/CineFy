@@ -25,6 +25,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.cinefy.R
 import com.example.cinefy.model.Movie
 import com.example.cinefy.ui.theme.screens.MedHeaderComp
@@ -81,23 +82,23 @@ fun StandardTextComp(text: String, modifier: Modifier = Modifier, style  : andro
 
 
 @Composable
-fun ListCompactScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+fun ListCompactScreen(movies: MutableList<Movie>, navController: NavController, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             items(movies) { movie ->
-               MovieCard(movie)
+               MovieCard(movie, onClick = {navController.navigateUp()})
             }
         }
     }
 }
 
 @Composable
-fun ListMedExpScreen(movies: MutableList<Movie>, modifier: Modifier = Modifier) {
+fun ListMedExpScreen(movies: MutableList<Movie>, navController: NavController, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize()) {
         MedHeaderComp(title = "Pantalla media o grande")
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             items(movies) { movie ->
-                MovieCard(movie)
+                MovieCard(movie, onClick = {navController.navigateUp()})
             }
         }
     }

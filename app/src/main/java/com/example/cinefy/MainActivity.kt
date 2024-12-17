@@ -77,7 +77,8 @@ class MainActivity : ComponentActivity() {
                         composable("movie_list") {
                             ElemtListScreen(
                                 movies,
-                                modifier = Modifier.padding(innerPadding)
+                                modifier = Modifier.padding(innerPadding),
+                                navController = navController
                             )
                         }
                         composable("lista_Fav") {
@@ -114,7 +115,8 @@ class MainActivity : ComponentActivity() {
                             val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
                             DetailItemScreen(
                                 movies = movie,
-                                modifier = Modifier.padding(innerPadding)
+                                modifier = Modifier.padding(innerPadding),
+                                navController = navController
                             )
                         }
                         composable("details_fav/{movie_title}") { backStackEntry ->
@@ -122,22 +124,11 @@ class MainActivity : ComponentActivity() {
                             val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
                             DetailFavScreen(
                                 movies = movie,
-                                modifier = Modifier.padding(innerPadding)
+                                modifier = Modifier.padding(innerPadding),
+                                navController = navController
                             )
                         }
                     }
-                    // Todo -> BuscarPeliculas
-                    // Para Buscar Peliculas mediante nombre se hace con este metodo
-//                    LaunchedEffect(key1 = true) {
-//                        // Función de búsqueda y navegación
-//                        val movieTitleToFind = "OppenHeimer"
-//                        val foundMovie = DataSource.findMovieByTitle(movies, movieTitleToFind)
-//                        if (foundMovie != null) {
-//                            navController.navigate("details/${foundMovie.title}")
-//                        } else {
-//                            println("Película no encontrada.")
-//                        }
-//                    }
                 }
             }
         }

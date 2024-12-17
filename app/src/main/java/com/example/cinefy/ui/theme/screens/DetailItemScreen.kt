@@ -20,61 +20,68 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.cinefy.R
 import com.example.cinefy.model.DataSource
 import com.example.cinefy.model.Movie
 import com.example.cinefy.ui.theme.componets.ImageComp
 import com.example.cinefy.ui.theme.componets.MovieCardDetail
 import com.example.cinefy.ui.theme.componets.StandardTextComp
+import com.example.cinefy.ui.theme.screens.MedHeaderCompDetail
 import com.example.compose.extendedLight
 
 @Composable
-fun DetailItemScreen(movies: Movie, modifier: Modifier = Modifier) {
+fun DetailItemScreen(movies: Movie, navController: NavController, modifier: Modifier = Modifier) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(5.dp),
-        contentAlignment = Alignment.Center
-    ) {
         Column(
+            modifier = Modifier.padding(60.dp).fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally, // Centrar contenido en el eje horizontal
-            verticalArrangement = Arrangement.Center // Centrar contenido en el eje vertical
+            verticalArrangement = Arrangement.Center
         ) {
-            MedHeaderComp3(title = stringResource(R.string.Detail_Item))
+            Row {
+                MedHeaderCompDetail(title = stringResource(R.string.Detail_Item), navController)
+            }
             if (isExpanded) {
                 MovieCardDetailWithFavButton(movies)
             } else {
                 MovieCardDetailWithFavButton(movies)
             }
         }
-    }
+
 }
 
 
 @Composable
 fun MovieCardDetailWithFavButton(movie: Movie) {
     var isFavorite by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .padding(6.dp),
+    LazyColumn(
+        modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MovieCardDetail(movie)
-        Spacer(modifier = Modifier.height(8.dp))
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(onClick = {
-                isFavorite = !isFavorite
-            }) {
-                Text(
-                    text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(
-                        R.string.AddFav
+        item {
+            MovieCardDetail(movie)
+        }
+        // Espacio entre la tarjeta y el siguiente contenido
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // Botón de favoritos
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = {
+                    isFavorite = !isFavorite
+                }) {
+                    Text(
+                        text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(
+                            R.string.AddFav
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -84,25 +91,25 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
 @Preview(showBackground = true, widthDp = 400)
 @Composable
 fun HeroListScreenPreview3() {
-    // Crea una instancia de Movie con datos de ejemplo.
-    val exampleMovie = Movie(
-        rank = 32,
-        title = "OppenHeimer",
-        descripcion = "The story of American scientist, J. Robert Oppenheimer, " +
-                "and his role in the development of the atomic bomb.",
-        image = "openheimerposter",
-        bigimage = "openheimerposter",
-        genre = "History",
-        thumbanil = "openheimerposter",
-        ranting = 8.6f,
-        id = "top32",
-        yearEstreno = 2023,
-        imdbid = "tt15398776",
-        imdbid_link = "https://www.imdb.com/title/tt15398776"
-
-
-    )
-    DetailItemScreen(movies = exampleMovie)
+//    // Crea una instancia de Movie con datos de ejemplo.
+//    val exampleMovie = Movie(
+//        rank = 32,
+//        title = "OppenHeimer",
+//        descripcion = "The story of American scientist, J. Robert Oppenheimer, " +
+//                "and his role in the development of the atomic bomb.",
+//        image = "openheimerposter",
+//        bigimage = "openheimerposter",
+//        genre = "History",
+//        thumbanil = "openheimerposter",
+//        ranting = 8.6f,
+//        id = "top32",
+//        yearEstreno = 2023,
+//        imdbid = "tt15398776",
+//        imdbid_link = "https://www.imdb.com/title/tt15398776"
+//
+//
+//    )
+//    DetailItemScreen(movies = exampleMovie)
 }
 
 
