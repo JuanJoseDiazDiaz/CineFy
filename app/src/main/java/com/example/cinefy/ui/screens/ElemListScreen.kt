@@ -26,53 +26,57 @@ import com.example.cinefy.ui.theme.extendedLight
  * Implementacion por parameteros el viewModel para que se conecte entre si
  * */
 @Composable
-fun ElemtListScreen(
-    movies: List<Movie>,
+fun ElementListScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MovieViewModel = viewModel() // ViewModel para obtener datos
 ) {
-    // Detectar el tamaño de la pantalla
+    val uiState by viewModel.uiState.collectAsState()
+    val movies = uiState.movies // Lista de películas obtenidas de la API
+
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
 
     var searchQuery by remember { mutableStateOf("") }
-    val filteredMovies = movies.filter { movie ->
-        movie.title.contains(searchQuery, ignoreCase = true)
+    val filteredMovies = movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getMovies() // Llamada a la API
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        // Barra de búsqueda
         MedHeaderCompConBuscador(
             title = stringResource(R.string.listaDePeliculas),
             searchQuery = searchQuery,
-            onQueryChange = { searchQuery = it })
+            onQueryChange = { searchQuery = it }
+        )
 
-        if (isExpanded) {
-            // Pantalla expandida
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(12.dp),
-                content = {
+        when {
+            uiState.isLoading -> {
+                // Muestra un indicador de carga mientras se obtienen los datos
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            uiState.errorMessage != null -> {
+                // Muestra un mensaje de error si la API falla
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Error: ${uiState.errorMessage}")
+                }
+            }
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(if (isExpanded) 3 else 2),
+                    contentPadding = PaddingValues(12.dp),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
                     items(filteredMovies) { movie ->
                         MovieCard(movie) {
-                            navController.navigate("details_fav/${movie.title}")
+                            navController.navigate("details_fav/${movie.id}") // Navegación con ID
                         }
                     }
                 }
-            )
-        } else {
-            // Pantalla compacta
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(12.dp),
-                content = {
-                    items(filteredMovies) { movie ->
-                        MovieCard(movie) {
-                            navController.navigate("details_fav/${movie.title}")
-                        }
-                    }
-                }
-            )
+            }
         }
     }
 }

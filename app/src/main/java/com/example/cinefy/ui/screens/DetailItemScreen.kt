@@ -1,3 +1,5 @@
+package com.example.cinefy.ui.screens
+
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,43 +22,50 @@ import com.example.cinefy.ui.componets.MovieCardDetail
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.MedHeaderCompDetail
 import com.example.cinefy.ui.theme.extendedLight
-/**
- * Implementacion por parameteros el viewModel para que se conecte entre si
- * */
+
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun DetailItemScreen(movieViewModel: MovieViewModel = viewModel(), movies: Movie, navController: NavController, modifier: Modifier = Modifier) {
+fun DetailItemScreen(
+    movieViewModel: MovieViewModel = viewModel(),
+    movie: Movie,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
-        Column(
-            modifier = Modifier.padding(60.dp).fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally, // Centrar contenido en el eje horizontal
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row {
-                MedHeaderCompDetail(title = stringResource(R.string.Detail_Item), navController)
-            }
-            if (isExpanded) {
-                MovieCardDetailWithFavButton(movies)
-            } else {
-                MovieCardDetailWithFavButton(movies)
-            }
+
+    Column(
+        modifier = Modifier
+            .padding(16.dp) // Ajusté el padding para mejorar el espaciado
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally, // Centrar contenido en el eje horizontal
+        verticalArrangement = Arrangement.Top // Ajusté la disposición para que se vea más equilibrado
+    ) {
+        // Header con el nombre de la película
+        MedHeaderCompDetail(title = stringResource(R.string.Detail_Item), navController)
+
+        // Dependiendo del tamaño de la pantalla, se adapta la vista
+        if (isExpanded) {
+            MovieCardDetailWithFavButton(movie)
+        } else {
+            MovieCardDetailWithFavButton(movie)
         }
-
+    }
 }
-
 
 @Composable
 fun MovieCardDetailWithFavButton(movie: Movie) {
-    var isFavorite by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(false) } // Variable para manejar el estado de favorito
+
     LazyColumn(
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            MovieCardDetail(movie)
+            MovieCardDetail(movie) // Componente de detalle de la película
         }
+
         // Espacio entre la tarjeta y el siguiente contenido
         item {
             Spacer(modifier = Modifier.height(8.dp))
@@ -71,9 +80,7 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
                     isFavorite = !isFavorite
                 }) {
                     Text(
-                        text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(
-                            R.string.AddFav
-                        )
+                        text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(R.string.AddFav)
                     )
                 }
             }
@@ -81,11 +88,10 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
     }
 }
 
-
 @Preview(showBackground = true, widthDp = 400)
 @Composable
 fun HeroListScreenPreview3() {
-//    // Crea una instancia de Movie con datos de ejemplo.
+//    // Ejemplo de película con datos ficticios para la vista previa
 //    val exampleMovie = Movie(
 //        rank = 32,
 //        title = "OppenHeimer",
@@ -100,12 +106,9 @@ fun HeroListScreenPreview3() {
 //        yearEstreno = 2023,
 //        imdbid = "tt15398776",
 //        imdbid_link = "https://www.imdb.com/title/tt15398776"
-//
-//
 //    )
-//    DetailItemScreen(movies = exampleMovie)
+//    DetailItemScreen(movie = exampleMovie, navController = NavController())
 }
-
 
 val LocalExtendedColorScheme3 = staticCompositionLocalOf {
     extendedLight //tomar cualquiera de los creados como referencia.
@@ -136,4 +139,3 @@ fun MedHeaderComp3(title: String) {
         }
     }
 }
-

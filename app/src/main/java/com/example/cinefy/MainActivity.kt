@@ -9,23 +9,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.data.DataCinefy.findMovieByTitle
+import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.ui.model.Movie
 import com.example.cinefy.ui.screens.AboutUsScreen
 import com.example.cinefy.ui.screens.ContactarCreadorIntent
@@ -34,12 +34,33 @@ import com.example.cinefy.ui.screens.ProfileScreenContent
 import com.example.cinefy.ui.componets.BottomNavigationBar
 import com.example.cinefy.utils.getWindowSizeClass
 import com.example.cinefy.ui.theme.CinefyTheme
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val userPreferences = UserPreferencesManager(this)
+
+        // Recuperar y aplicar el tema guardado
+        lifecycleScope.launch {
+            userPreferences.themeFlow.collectLatest { theme ->
+                when (theme) {
+                    "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+            }
+        }
+        val exampleMovie = Movie(
+            rank = 32,
+            title = "OppenHeimer",,,,,,,
+            id = "top32",,,
+            imdbLink = "https://www.imdb.com/title/tt15398776"
+        )
         setContent {
             val movies = DataCinefy.movieList()
             val windowSize = getWindowSizeClass(LocalContext.current as Activity)
@@ -53,21 +74,6 @@ class MainActivity : ComponentActivity() {
                         if (windowSize == WindowWidthSizeClass.Compact && currentRoute?.contains("details") == false)
                             BottomNavigationBar(navController, currentRoute)
                     }) { innerPadding ->
-                    val exampleMovie = Movie(
-                        rank = 32,
-                        title = "OppenHeimer",
-                        descripcion = "The story of American scientist, J. Robert Oppenheimer, " +
-                                "and his role in the development of the atomic bomb.",
-                        image = "openheimerposter",
-                        bigimage = "openheimerposter",
-                        genre = "History",
-                        thumbanil = "openheimerposter",
-                        ranting = 8.6f,
-                        id = "top32",
-                        yearEstreno = 2023,
-                        imdbid = "tt15398776",
-                        imdbid_link = "https://www.imdb.com/title/tt15398776"
-                    )
                     NavHost(navController = navController, startDestination = "movie_list") {
                         composable("movie_list") {
                             ElemtListScreen(
@@ -84,14 +90,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("pag_Profile") {
                             ProfileScreenContent(
-//                                userName = stringResource(R.string.nameUser),
-//                                userEmail = stringResource(R.string.emailUser),
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
                         composable("aboutUs") {
                             AboutUsScreen(
-                                modifier = Modifier.padding(innerPadding), // Pasamos el innerPadding al AboutUsScreen
+                                modifier = Modifier.padding(innerPadding),
                                 onClickSendData = { name, tematica, descripcion, version ->
                                     val intent = ContactarCreadorIntent(name, tematica, descripcion, version)
                                     startActivity(
@@ -101,7 +105,6 @@ class MainActivity : ComponentActivity() {
                                         )
                                     )
                                 }
-
                             )
                         }
                         composable("details/{movie_title}") { backStackEntry ->

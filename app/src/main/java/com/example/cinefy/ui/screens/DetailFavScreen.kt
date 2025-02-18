@@ -1,3 +1,5 @@
+package com.example.cinefy.ui.screens
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -23,36 +25,43 @@ import com.example.cinefy.ui.componets.MovieCardDetail
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.MedHeaderCompDetail
 import com.example.cinefy.ui.theme.extendedLight
+
 /**
- * Implementacion por parameteros el viewModel para que se conecte entre si
+ * Implementacion por parametros el viewModel para que se conecte entre si
  * */
 @Composable
-fun DetailFavScreen(movieViewModel: MovieViewModel = viewModel(), movies: Movie, navController: NavController, modifier: Modifier = Modifier) {
+fun DetailFavScreen(
+    movieViewModel: MovieViewModel = viewModel(),
+    movie: Movie,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
 
     Column(
-        modifier = Modifier.padding(60.dp).fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally, // Centrar contenido en el eje horizontal
-        verticalArrangement = Arrangement.Center // Centrar contenido en el eje vertical
+        modifier = Modifier.padding(16.dp).fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Row {
             MedHeaderCompDetail(title = stringResource(R.string.Detail_Item), navController)
         }
+
+        // Dependiendo del tamaño de la pantalla, se adapta la vista
         if (isExpanded) {
-            MovieCardDetailWithFavButton2(movies)
+            MovieCardDetailWithFavButton2(movie)
         } else {
-            MovieCardDetailWithFavButton2(movies)
+            MovieCardDetailWithFavButton2(movie)
         }
     }
 }
 
-
 @Composable
 fun MovieCardDetailWithFavButton2(movie: Movie) {
-    var isFavorite by remember { mutableStateOf(false) }
-    // Toda la pantalla es una LazyColumn
+    var isFavorite by remember { mutableStateOf(false) } // Estado del botón de favoritos
+
     LazyColumn(
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -69,16 +78,12 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
 
         // Botón de favoritos
         item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Button(onClick = {
                     isFavorite = !isFavorite
                 }) {
                     Text(
-                        text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(
-                            R.string.AddFav
-                        )
+                        text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(R.string.AddFav)
                     )
                 }
             }
@@ -88,12 +93,13 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
         item {
             Spacer(modifier = Modifier.height(16.dp))
             Row {
-                Text(stringResource(R.string.Comentarios), style = MaterialTheme.typography.headlineMedium,)
+                Text(
+                    stringResource(R.string.Comentarios),
+                    style = MaterialTheme.typography.headlineMedium,
+                )
                 Spacer(modifier = Modifier.width(5.dp))
                 FloatingActionButton(
-                    onClick = {
-                        // Acción al hacer clic en el FAB
-                    },
+                    onClick = { /* Acción al hacer clic en el FAB */ },
                     modifier = Modifier.size(48.dp), // Ajusta el tamaño del FAB
                     containerColor = MaterialTheme.colorScheme.primary // Color del botón
                 ) {
@@ -108,7 +114,7 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
 
         // LazyColumn interna para mostrar una lista de elementos (por ejemplo, comentarios)
         items(1) { index ->
-            // Aquí puedes reemplazar este contenido con tus elementos reales, como comentarios, etc.
+            // Reemplaza este contenido con datos reales de comentarios
             Row {
                 Icon(
                     imageVector = Icons.TwoTone.AccountCircle,
@@ -120,11 +126,11 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
                     text = "Magnífica dirección y actuación en una historia conmovedora.",
                     modifier = Modifier.padding(8.dp)
                 )
-
             }
         }
+
         items(1) { index ->
-            // Aquí puedes reemplazar este contenido con tus elementos reales, como comentarios, etc.
+            // Otro comentario ficticio
             Row {
                 Icon(
                     imageVector = Icons.TwoTone.AccountCircle,
@@ -136,13 +142,11 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
                     text = "Una película impactante y profunda sobre la ciencia y la moral.",
                     modifier = Modifier.padding(8.dp)
                 )
-
             }
-
         }
-        items(1) { index ->
-            // Aquí puedes reemplazar este contenido con tus elementos reales, como comentarios, etc.
 
+        items(1) { index ->
+            // Otro comentario ficticio
             Row {
                 Icon(
                     imageVector = Icons.TwoTone.AccountCircle,
@@ -159,11 +163,10 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
     }
 }
 
-
 @Preview(showBackground = true, widthDp = 400)
 @Composable
 fun HeroListScreenPreview4() {
-//    // Crea una instancia de Movie con datos de ejemplo.
+//    // Ejemplo de película con datos ficticios para la vista previa
 //    val exampleMovie = Movie(
 //        rank = 32,
 //        title = "OppenHeimer",
@@ -178,15 +181,10 @@ fun HeroListScreenPreview4() {
 //        yearEstreno = 2023,
 //        imdbid = "tt15398776",
 //        imdbid_link = "https://www.imdb.com/title/tt15398776"
-//
-//
 //    )
-//    DetailItemScreen(movies = exampleMovie)
+//    DetailFavScreen(movie = exampleMovie, navController = NavController())
 }
-
 
 val LocalExtendedColorScheme4 = staticCompositionLocalOf {
     extendedLight //tomar cualquiera de los creados como referencia.
 }
-
-

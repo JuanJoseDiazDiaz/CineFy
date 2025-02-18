@@ -1,16 +1,19 @@
 package com.example.cinefy.ui.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Movie(
-    val  rank : Int,
-    val title : String,
-    val descripcion : String,
-    val image : String,
-    val bigimage : String,
-    val genre : String,
-    val thumbanil : String,
-    val ranting : Float,
-    val id : String,
-    val yearEstreno : Int,
-    val imdbid : String,
-    val imdbid_link : String
+    @SerializedName("rank") val rank: Int,
+    @SerializedName("title") val title: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("image") val imageUrl: String,
+    @SerializedName("big_image") val bigImageUrl: String,
+    @SerializedName("genre") val genres: List<String>,
+    @SerializedName("thumbnail") val thumbnailUrl: String,
+    @SerializedName("rating") val rating: String,
+    @SerializedName("id") val id: String,
+    @SerializedName("year") val year: Int,
+    @SerializedName("imdbid") val imdbId: String,
+    @SerializedName("imdb_link") val imdbLink: String
 )
+

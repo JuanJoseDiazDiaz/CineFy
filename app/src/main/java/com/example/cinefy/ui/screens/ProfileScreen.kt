@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -20,7 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinefy.R
+import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.ui.movie.MovieViewModel
+import kotlinx.coroutines.launch
 
 class ProfileScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,17 +38,21 @@ class ProfileScreen : ComponentActivity() {
 }
 
 @Composable
-fun ProfileScreenContent(movieViewModel: MovieViewModel = viewModel(), modifier: Modifier = Modifier) {
-    val configuration = LocalConfiguration.current
-    val isExpanded = configuration.screenWidthDp > 600
-    var loggedIn by remember { mutableStateOf(false) }
-    // Conecta con entre sí con el dataStore
-    val movieUiState by movieViewModel.uiState.collectAsState()
+fun ProfileScreenContent(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val userPreferences = remember { UserPreferencesManager(context) }
 
-    // Estado para manejar la edición de los campos
-    var nameUser by remember { mutableStateOf(movieUiState.nameUser) }
-    var passwordUser by remember { mutableStateOf(movieUiState.passwordUser) }
-    var emailUser by remember { mutableStateOf(movieUiState.emailUser) }
+    var nameUser by remember { mutableStateOf("") }
+    var themePreference by remember { mutableStateOf("system") }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    // Obtener el nombre de usuario almacenado
+    LaunchedEffect(Unit) {
+        userPreferences.usernameFlow.collect { savedUsername ->
+            savedUsername?.let { nameUser = it }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -72,35 +79,36 @@ fun ProfileScreenContent(movieViewModel: MovieViewModel = viewModel(), modifier:
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // TextField para la contraseña
-        TextField(
-            value = passwordUser,
-            onValueChange = { passwordUser = it },
-            label = { Text(text = "Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),  // Esto oculta la contraseña
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // TextField para el correo electrónico
-        TextField(
-            value = emailUser,
-            onValueChange = { emailUser = it },
-            label = { Text(text = "Correo electrónico") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
+        // Guardar el nombre de usuario en DataStore
         Button(
-            onClick = { loggedIn = !loggedIn },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (loggedIn) Color.Red else MaterialTheme.colorScheme.primary
-            ),
+            onClick = {
+                coroutineScope.launch {
+                    userPreferences.saveUsername(nameUser)
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = if (loggedIn) stringResource(R.string.Logout) else stringResource(R.string.Login)
-            )
+            Text(text = "Guardar Nombre")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Selector de tema
+        Text(text = "Seleccionar tema:")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(onClick = {
+                coroutineScope.launch { userPreferences.saveTheme("light") }
+            }) { Text("Claro") }
+
+            Button(onClick = {
+                coroutineScope.launch { userPreferences.saveTheme("dark") }
+            }) { Text("Oscuro") }
+
+            Button(onClick = {
+                coroutineScope.launch { userPreferences.saveTheme("system") }
+            }) { Text("Sistema") }
         }
     }
 }
