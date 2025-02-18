@@ -1,4 +1,4 @@
-package com.example.cinefy.ui.theme.screens
+package com.example.cinefy.ui.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,27 +15,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinefy.R
+import com.example.cinefy.ui.movie.MovieViewModel
 
 class ProfileScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProfileScreenContent(
-                userName = stringResource(R.string.nameUser),
-                userEmail = stringResource(R.string.emailUser)
+//                userName = stringResource(R.string.nameUser),
+//                userEmail = stringResource(R.string.emailUser)
             )
         }
     }
 }
 
 @Composable
-fun ProfileScreenContent(userName: String, userEmail: String, modifier: Modifier = Modifier) {
+fun ProfileScreenContent(movieViewModel: MovieViewModel = viewModel(), modifier: Modifier = Modifier) {
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     var loggedIn by remember { mutableStateOf(false) }
+    // Conecta con entre sí con el dataStore
+    val movieUiState by movieViewModel.uiState.collectAsState()
+
+    // Estado para manejar la edición de los campos
+    var nameUser by remember { mutableStateOf(movieUiState.nameUser) }
+    var passwordUser by remember { mutableStateOf(movieUiState.passwordUser) }
+    var emailUser by remember { mutableStateOf(movieUiState.emailUser) }
 
     Column(
         modifier = modifier
@@ -52,14 +62,32 @@ fun ProfileScreenContent(userName: String, userEmail: String, modifier: Modifier
                 .width(150.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = userName,
-            style = MaterialTheme.typography.headlineSmall
+
+        // TextField para el nombre de usuario
+        TextField(
+            value = nameUser,
+            onValueChange = { nameUser = it },
+            label = { Text(text = "Nombre de usuario") },
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = userEmail,
-            style = MaterialTheme.typography.bodyMedium
+
+        // TextField para la contraseña
+        TextField(
+            value = passwordUser,
+            onValueChange = { passwordUser = it },
+            label = { Text(text = "Contraseña") },
+            visualTransformation = PasswordVisualTransformation(),  // Esto oculta la contraseña
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // TextField para el correo electrónico
+        TextField(
+            value = emailUser,
+            onValueChange = { emailUser = it },
+            label = { Text(text = "Correo electrónico") },
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -81,7 +109,6 @@ fun ProfileScreenContent(userName: String, userEmail: String, modifier: Modifier
 @Composable
 fun ProfileScreenPreview() {
     ProfileScreenContent(
-        userName = stringResource(R.string.nameUser),
-        userEmail = stringResource(R.string.emailUser)
+
     )
 }

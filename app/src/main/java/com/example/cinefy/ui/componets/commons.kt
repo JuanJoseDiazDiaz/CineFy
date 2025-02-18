@@ -1,4 +1,4 @@
-package com.example.cinefy.ui.theme.componets
+package com.example.cinefy.ui.componets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.cinefy.R
-import com.example.cinefy.model.Movie
-import com.example.cinefy.ui.theme.screens.MedHeaderComp
+import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.ui.screens.MedHeaderComp
 
 @Composable
 fun StandardButtonImage(icon : Painter, modifier: Modifier = Modifier, onClick: () -> Unit) {

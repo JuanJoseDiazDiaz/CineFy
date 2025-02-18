@@ -15,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,20 +24,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.cinefy.model.DataSource
-import com.example.cinefy.model.DataSource.findMovieByTitle
-import com.example.cinefy.model.Movie
-import com.example.cinefy.ui.theme.screens.AboutUsScreen
-import com.example.cinefy.ui.theme.screens.ContactarCreadorIntent
-import com.example.cinefy.ui.theme.screens.ElemtListScreen
-import com.example.cinefy.ui.theme.screens.ProfileScreenContent
-import com.example.cinefy.ui.theme.componets.BottomNavigationBar
-import com.example.cinefy.ui.theme.screens.AboutUsScreen
-import com.example.cinefy.ui.theme.screens.ContactarCreadorIntent
-import com.example.cinefy.ui.theme.screens.ElemtListScreen
-import com.example.cinefy.ui.theme.screens.ProfileScreenContent
-import com.example.cinefy.ui.theme.utils.getWindowSizeClass
-import com.example.compose.CinefyTheme
+import com.example.cinefy.data.DataCinefy
+import com.example.cinefy.data.DataCinefy.findMovieByTitle
+import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.ui.screens.AboutUsScreen
+import com.example.cinefy.ui.screens.ContactarCreadorIntent
+import com.example.cinefy.ui.screens.ElemtListScreen
+import com.example.cinefy.ui.screens.ProfileScreenContent
+import com.example.cinefy.ui.componets.BottomNavigationBar
+import com.example.cinefy.utils.getWindowSizeClass
+import com.example.cinefy.ui.theme.CinefyTheme
 import kotlinx.coroutines.flow.map
 
 class MainActivity : ComponentActivity() {
@@ -46,7 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val movies = DataSource.movieList()
+            val movies = DataCinefy.movieList()
             val windowSize = getWindowSizeClass(LocalContext.current as Activity)
             val navController = rememberNavController()
             val currentRoute by navController.currentBackStackEntryFlow.map { it.destination.route }
@@ -89,8 +84,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("pag_Profile") {
                             ProfileScreenContent(
-                                userName = stringResource(R.string.nameUser),
-                                userEmail = stringResource(R.string.emailUser),
+//                                userName = stringResource(R.string.nameUser),
+//                                userEmail = stringResource(R.string.emailUser),
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
@@ -98,8 +93,7 @@ class MainActivity : ComponentActivity() {
                             AboutUsScreen(
                                 modifier = Modifier.padding(innerPadding), // Pasamos el innerPadding al AboutUsScreen
                                 onClickSendData = { name, tematica, descripcion, version ->
-                                    val intent =
-                                        ContactarCreadorIntent(name, tematica, descripcion, version)
+                                    val intent = ContactarCreadorIntent(name, tematica, descripcion, version)
                                     startActivity(
                                         Intent.createChooser(
                                             intent,

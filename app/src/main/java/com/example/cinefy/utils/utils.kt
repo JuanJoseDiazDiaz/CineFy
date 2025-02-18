@@ -1,4 +1,4 @@
-package com.example.cinefy.ui.theme.utils
+package com.example.cinefy.utils
 
 import android.app.Activity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi

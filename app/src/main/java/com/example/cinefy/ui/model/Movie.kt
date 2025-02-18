@@ -1,4 +1,4 @@
-package com.example.cinefy.model
+package com.example.cinefy.ui.model
 
 data class Movie(
     val  rank : Int,

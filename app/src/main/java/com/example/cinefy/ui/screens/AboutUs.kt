@@ -1,16 +1,6 @@
-package com.example.cinefy.ui.theme.screens
+package com.example.cinefy.ui.screens
 
-
-
-
-import DetailItemScreen
-import FavListScreenContent
 import android.content.Intent
-import android.content.res.Resources
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,19 +25,19 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinefy.R
-import com.example.cinefy.model.DataSource
-import com.example.cinefy.ui.theme.componets.StandardButtonImage
-import com.example.cinefy.ui.theme.screens.ElemtListScreen
-import com.example.compose.CinefyTheme
-
+import com.example.cinefy.ui.componets.StandardButtonImage
+import com.example.cinefy.ui.movie.MovieViewModel
+/**
+ * Implementacion por parameteros el viewModel para que se conecte entre si
+ * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutUsScreen(
+    movieViewModel: MovieViewModel = viewModel(),
     modifier: Modifier = Modifier,
     nameApp: String = "Cinefy",
     tematica: String = "Cinematográfica",
@@ -75,8 +65,6 @@ fun AboutUsScreen(
         )
     }
 }
-
-
 
 
 @Composable

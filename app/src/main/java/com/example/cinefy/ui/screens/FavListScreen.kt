@@ -15,23 +15,27 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinefy.R
-import com.example.cinefy.model.DataSource
-import com.example.cinefy.model.Movie
-import com.example.cinefy.ui.theme.componets.ImageComp
-import com.example.cinefy.ui.theme.screens.MedHeaderComp
+import com.example.cinefy.data.DataCinefy
+import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.ui.componets.ImageComp
+import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.MedHeaderComp
 
 class FavListScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FavListScreenContent(favoriteMovies = DataSource.movieList())
+            FavListScreenContent(favoriteMovies = DataCinefy.movieList())
         }
     }
 }
-
+/**
+ * Implementacion por parameteros el viewModel para que se conecte entre si
+ * */
 @Composable
-fun FavListScreenContent(favoriteMovies: List<Movie>, modifier: Modifier = Modifier) {
+fun FavListScreenContent(movieViewModel: MovieViewModel = viewModel(), favoriteMovies: List<Movie>, modifier: Modifier = Modifier) {
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     var favorites by remember { mutableStateOf(favoriteMovies) }
@@ -130,7 +134,7 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun FavListScreenPreview() {
-    FavListScreenContent(favoriteMovies = DataSource.movieList())
+    FavListScreenContent(favoriteMovies = DataCinefy.movieList())
 }
 
 @Composable
@@ -141,7 +145,7 @@ fun MovieCardDetail(movie: Movie) {
                 .padding(8.dp),
             shape = MaterialTheme.shapes.medium,
         ) {
-            ImageComp(drawable = DataSource.getDrawableIdName(movie.image))
+            ImageComp(drawable = DataCinefy.getDrawableIdName(movie.image))
         }
     }
 }

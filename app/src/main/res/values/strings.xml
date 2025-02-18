@@ -25,4 +25,5 @@
     <string name="name_Fav">Favoritos</string>
     <string name="Movie">Películas</string>
     <string name="search_placeholder">Buscar Peliculas</string>
+    <string name="info">Info</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.cinefy.ui.theme.componets
+package com.example.cinefy.ui.componets
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -23,7 +23,7 @@ fun BottomNavigationBar(navController: NavController, currentRoute: String?) {
         val items = listOf(
             BottomNavItem("movie_list", Icons.AutoMirrored.Filled.List, stringResource(R.string.Movie)),
             BottomNavItem("lista_Fav", Icons.Default.Favorite, stringResource(R.string.name_Fav)),
-            BottomNavItem("aboutUs", Icons.Default.Info, stringResource(R.string.title_AboutUs)),
+            BottomNavItem("aboutUs", Icons.Default.Info, stringResource(R.string.info)),
             BottomNavItem("pag_Profile", Icons.Default.Person, stringResource(R.string.title_activity_profile))
         )
         items.forEach { item ->

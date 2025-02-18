@@ -1,4 +1,4 @@
-package com.example.cinefy.ui.theme.screens
+package com.example.cinefy.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,13 +15,16 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.R
-import com.example.cinefy.model.DataSource
-import com.example.cinefy.model.Movie
-import com.example.cinefy.ui.theme.componets.MovieCard
-import com.example.compose.extendedLight
-
+import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.ui.componets.MovieCard
+import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.theme.extendedLight
+/**
+ * Implementacion por parameteros el viewModel para que se conecte entre si
+ * */
 @Composable
 fun ElemtListScreen(
     movies: List<Movie>,
