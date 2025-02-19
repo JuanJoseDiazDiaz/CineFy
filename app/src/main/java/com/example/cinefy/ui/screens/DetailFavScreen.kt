@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.twotone.AccountCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,14 +32,22 @@ import com.example.cinefy.ui.theme.extendedLight
  * */
 @Composable
 fun DetailFavScreen(
+    movieTitle: String?, // Recibe el ID de la película desde la navegación
     movieViewModel: MovieViewModel = viewModel(),
-    movie: Movie,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val uiState by movieViewModel.uiState.collectAsState()
+    val movie = uiState.movies.find { it.title == movieTitle }
+    val isLoading = uiState.isLoading
+    val errorMessage = uiState.errorMessage
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
+
+    LaunchedEffect(Unit) {
+        movieViewModel.getMovies()
+    }
 
     Column(
         modifier = Modifier.padding(16.dp).fillMaxSize(),
@@ -48,12 +57,23 @@ fun DetailFavScreen(
         Row {
             MedHeaderCompDetail(title = stringResource(R.string.Detail_Item), navController)
         }
-
-        // Dependiendo del tamaño de la pantalla, se adapta la vista
-        if (isExpanded) {
-            MovieCardDetailWithFavButton2(movie)
-        } else {
-            MovieCardDetailWithFavButton2(movie)
+        when {
+            isLoading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            errorMessage != null -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Error: $errorMessage")
+                }
+            }
+            movie != null -> {
+                MovieCardDetailWithFavButton2(movie)
+            }
+            else -> {
+                Text(text = stringResource(R.string.movie_not_found), style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }

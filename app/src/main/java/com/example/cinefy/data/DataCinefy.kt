@@ -8,26 +8,59 @@ object DataCinefy {
         mutableListOf<Movie>(
             Movie(
                 rank = 32,
-                title = "OppenHeimer",,,,,,,
-                id = "top32",,,
+                title = "OppenHeimer",
+                description = "The story of American scientist, J. Robert Oppenheimer, " +
+                        "and his role in the development of the atomic bomb.",
+                imageUrl = "openheimerposter",
+                bigImageUrl = "openheimerposter",
+                genres = "History",
+                thumbnailUrl = "openheimerposter",
+                rating = 8.6f,
+                id = "top32",
+                year = 2023,
+                imdbId = "tt15398776",
                 imdbLink = "https://www.imdb.com/title/tt15398776"
             ),
             Movie(
                 rank = 33,
-                title = "Harakiri",,,,,,,
-                id = "top33",,,
+                title = "Harakiri",
+                description = "When a ronin requesting seppuku at a feudal lord's palace is told of the brutal suicide of another ronin who previously visited",
+                imageUrl = "harakiri_poster",
+                bigImageUrl = "harakiri_poster",
+                genres = "Action",
+                thumbnailUrl = "harakiri_poster",
+                rating = 8.6f,
+                id = "top33",
+                year = 1962,
+                imdbId = "tt0056058",
                 imdbLink = "https://www.imdb.com/title/tt0056058"
             ),
             Movie(
                 rank = 34,
-                title = "Back to the Future",,,,,,,
-                id = "top34",,,
+                title = "Back to the Future",
+                description = "Marty McFly, a 17-year-old high school student, is accidentally sent 30 years into the past in a time-traveling DeLorean invented by his close friend, the maverick scientist Doc Brown.",
+                imageUrl = "backtothefuture_poster",
+                bigImageUrl = "backtothefuture_poster",
+                genres = "Adventure",
+                thumbnailUrl = "backtothefuture_poster",
+                rating = 8.5f,
+                id = "top34",
+                year = 1985,
+                imdbId = "tt0088763",
                 imdbLink = "https://www.imdb.com/title/tt0088763"
             ),
             Movie(
                 rank = 35,
-                title = "The Pianist",,,,,,,
-                id = "top35",,,
+                title = "The Pianist",
+                description = "A Polish Jewish musician struggles to survive the destruction of the Warsaw ghetto of World War II.",
+                imageUrl = "thepianist_poster",
+                bigImageUrl = "thepianist_poster",
+                genres = "Drama",
+                thumbnailUrl = "thepianist_poster",
+                rating = 8.5f,
+                id = "top35",
+                year = 2002,
+                imdbId = "tt0253474",
                 imdbLink = "https://www.imdb.com/title/tt0253474"
             )
         ).apply { shuffle()}

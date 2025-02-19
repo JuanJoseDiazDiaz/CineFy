@@ -26,4 +26,5 @@
     <string name="Movie">Películas</string>
     <string name="search_placeholder">Buscar Peliculas</string>
     <string name="info">Info</string>
+    <string name="movie_not_found">Peliculas no encontradas</string>
 </resources>

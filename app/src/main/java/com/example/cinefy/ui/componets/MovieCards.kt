@@ -48,7 +48,7 @@ fun MovieCard(Movie: Movie, onClick: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ImageComp(
-                        drawable = DataCinefy.getDrawableIdName(Movie.image),
+                        drawable = DataCinefy.getDrawableIdName(Movie.imageUrl),
                         contentScale = ContentScale.Fit,
                     )
                     Box {

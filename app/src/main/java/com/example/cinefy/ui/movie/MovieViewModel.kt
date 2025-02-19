@@ -3,15 +3,17 @@ package com.example.cinefy.ui.movie
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cinefy.data.RetrofitInstance
+import com.example.cinefy.repository.MovieRepository
 import com.example.cinefy.ui.model.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel : ViewModel() {
+class MovieViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
+    private val repository: MovieRepository = MovieRepository(RetrofitInstance.api)  // Agregamos esta línea
 
     // Datos a guardar nombre de usuario, contraseña y correo electrónico
     private var nameUser: String? = null

@@ -145,7 +145,7 @@ fun MovieCardDetail(movie: Movie) {
                 .padding(8.dp),
             shape = MaterialTheme.shapes.medium,
         ) {
-            ImageComp(drawable = DataCinefy.getDrawableIdName(movie.image))
+            ImageComp(drawable = DataCinefy.getDrawableIdName(movie.imageUrl))
         }
     }
 }

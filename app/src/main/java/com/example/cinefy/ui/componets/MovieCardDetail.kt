@@ -27,7 +27,7 @@ fun MovieCardDetail(Movie: Movie) {
     var isTooltipVisible by remember { mutableStateOf(false) }
     Row {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            ImageComp(drawable = DataCinefy.getDrawableIdName(Movie.image), height = 500, width = 500)
+            ImageComp(drawable = DataCinefy.getDrawableIdName(Movie.imageUrl), height = 500, width = 500)
         }
     }
     StandardTextComp(
@@ -52,7 +52,7 @@ fun MovieCardDetail(Movie: Movie) {
                     ) {
                     Column {
                         StandardTextComp(
-                            text = "Genero: ${Movie.genre}",
+                            text = "Genero: ${Movie.genres}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                         StandardTextComp(
@@ -60,11 +60,11 @@ fun MovieCardDetail(Movie: Movie) {
                             style = MaterialTheme.typography.bodyMedium
                         )
                         StandardTextComp(
-                            text = "Fecha de Estreno: ${Movie.yearEstreno}",
+                            text = "Fecha de Estreno: ${Movie.year}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                         StandardTextComp(
-                            text = "Descripcion: ${Movie.descripcion}",
+                            text = "Descripcion: ${Movie.description}",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }

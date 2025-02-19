@@ -1,7 +1,5 @@
 package com.example.cinefy
 
-import DetailFavScreen
-import DetailItemScreen
 import FavListScreenContent
 import android.app.Activity
 import android.content.Intent
@@ -29,9 +27,12 @@ import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.ui.model.Movie
 import com.example.cinefy.ui.screens.AboutUsScreen
 import com.example.cinefy.ui.screens.ContactarCreadorIntent
-import com.example.cinefy.ui.screens.ElemtListScreen
+
 import com.example.cinefy.ui.screens.ProfileScreenContent
 import com.example.cinefy.ui.componets.BottomNavigationBar
+import com.example.cinefy.ui.screens.DetailFavScreen
+import com.example.cinefy.ui.screens.DetailItemScreen
+import com.example.cinefy.ui.screens.ElementListScreen
 import com.example.cinefy.utils.getWindowSizeClass
 import com.example.cinefy.ui.theme.CinefyTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -57,9 +58,19 @@ class MainActivity : ComponentActivity() {
         }
         val exampleMovie = Movie(
             rank = 32,
-            title = "OppenHeimer",,,,,,,
-            id = "top32",,,
+            title = "OppenHeimer",
+            description = "The story of American scientist, J. Robert Oppenheimer, " +
+                    "and his role in the development of the atomic bomb.",
+            imageUrl = "openheimerposter",
+            bigImageUrl = "openheimerposter",
+            genres = "History",
+            thumbnailUrl = "openheimerposter",
+            rating = 8.6f,
+            id = "top32",
+            year = 2023,
+            imdbId = "tt15398776",
             imdbLink = "https://www.imdb.com/title/tt15398776"
+
         )
         setContent {
             val movies = DataCinefy.movieList()
@@ -76,8 +87,7 @@ class MainActivity : ComponentActivity() {
                     }) { innerPadding ->
                     NavHost(navController = navController, startDestination = "movie_list") {
                         composable("movie_list") {
-                            ElemtListScreen(
-                                movies,
+                            ElementListScreen(
                                 modifier = Modifier.padding(innerPadding),
                                 navController = navController
                             )
@@ -111,7 +121,7 @@ class MainActivity : ComponentActivity() {
                             val movieTitle = backStackEntry.arguments?.getString("movie_title")
                             val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
                             DetailItemScreen(
-                                movies = movie,
+                                movieTitle = movieTitle,
                                 modifier = Modifier.padding(innerPadding),
                                 navController = navController
                             )
@@ -120,9 +130,9 @@ class MainActivity : ComponentActivity() {
                             val movieTitle = backStackEntry.arguments?.getString("movie_title")
                             val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
                             DetailFavScreen(
-                                movies = movie,
+                                movieTitle = movieTitle,
+                                navController = navController,
                                 modifier = Modifier.padding(innerPadding),
-                                navController = navController
                             )
                         }
                     }

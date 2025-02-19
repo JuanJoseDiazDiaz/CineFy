@@ -4,6 +4,6 @@ import com.example.cinefy.ui.model.Movie
 import retrofit2.http.GET
 
 interface MovieApiService {
-    @GET("https://imdb-top-100-movies.p.rapidapi.com/") // Reemplaza con la URL correcta de tu API
+    @GET("/") // Solo el endpoint relativo
     suspend fun getMovies(): List<Movie>
 }
