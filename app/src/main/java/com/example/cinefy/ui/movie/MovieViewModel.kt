@@ -10,65 +10,58 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel: ViewModel() {
+class MovieViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
-    private val repository: MovieRepository = MovieRepository(RetrofitInstance.api)  // Agregamos esta línea
 
-    // Datos a guardar nombre de usuario, contraseña y correo electrónico
-    private var nameUser: String? = null
-    private var passwordUser: String? = null
-    private var emailUser: String? = null
-
-    private val _movies = MutableStateFlow<List<Movie>>(emptyList())
-    val movies: StateFlow<List<Movie>> = _movies
+    private val repository: MovieRepository = MovieRepository(RetrofitInstance.api)
+    var isRequestInProgress = false
 
     init {
-        fetchMovies()
+        // Llamar a getMovies directamente desde el init para cargar los datos
+        getMovies()
     }
 
-    private fun fetchMovies() {
-        viewModelScope.launch {
-            try {
-                val response = RetrofitInstance.api.getMovies()
-                _movies.value = response
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
     fun getMovies() {
+        // Solo hace la petición si no hay otra en curso
+        if (isRequestInProgress) return
+
+        isRequestInProgress = true
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true)  // Muestra el cargador
             try {
-                val movies = repository.getMovies()
+                // Realiza la solicitud a la API usando el repositorio
+                val movies = repository.getMovies()  // Obtiene las películas
+                // Actualiza el estado con las películas obtenidas
                 _uiState.value = MovieUiState(movies = movies)
             } catch (e: Exception) {
+                // Maneja los errores y actualiza el estado de la UI con el mensaje de error
                 _uiState.value = MovieUiState(errorMessage = e.message)
+            } finally {
+                isRequestInProgress = false
             }
         }
     }
 
     // Reseteo de datos del usuario
     fun resetDataUser() {
-        // Verifica que los valores no sean null antes de actualizar el estado
         _uiState.value = MovieUiState(
-            nameUser = nameUser ?: "Usuario Desconocido",  // Valor por defecto si es null
-            passwordUser = passwordUser ?: "Contraseña No Establecida",  // Valor por defecto si es null
-            emailUser = emailUser ?: "Email No Establecido"  // Valor por defecto si es null
+//            nameUser = nameUser ?: "Usuario Desconocido",
+//            passwordUser = passwordUser ?: "Contraseña No Establecida",
+//            emailUser = emailUser ?: "Email No Establecido"
         )
     }
 
     // Inicializa el ViewModel con valores si están disponibles
     fun initializeUserData(name: String, password: String, email: String) {
-        nameUser = name
-        passwordUser = password
-        emailUser = email
-        resetDataUser()  // Actualiza el estado después de la inicialización
+//        nameUser = name
+//        passwordUser = password
+//        emailUser = email
+//        resetDataUser()
     }
 
     // Inicializa el estado con valores predeterminados
     init {
-        resetDataUser()  // Llama al reset de datos si no tienes valores disponibles
+        resetDataUser()
     }
 }

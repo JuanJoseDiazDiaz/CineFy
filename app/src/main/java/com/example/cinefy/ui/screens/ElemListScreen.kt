@@ -40,8 +40,11 @@ fun ElementListScreen(
     var searchQuery by remember { mutableStateOf("") }
     val filteredMovies = movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
 
+
     LaunchedEffect(Unit) {
-        viewModel.getMovies() // Llamada a la API
+        if (movies.isEmpty()) {
+            viewModel.getMovies()
+        }
     }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -65,14 +68,14 @@ fun ElementListScreen(
                 }
             }
             else -> {
+                // Muestra las películas
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(if (isExpanded) 3 else 2),
-                    contentPadding = PaddingValues(12.dp),
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(12.dp)
                 ) {
-                    items(filteredMovies) { movie ->
+                    items(uiState.movies) { movie ->
                         MovieCard(movie) {
-                            navController.navigate("details_fav/${movie.id}") // Navegación con ID
+                            navController.navigate("details_fav/${movie.id}")
                         }
                     }
                 }
@@ -80,6 +83,7 @@ fun ElementListScreen(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

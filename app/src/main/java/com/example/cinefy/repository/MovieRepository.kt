@@ -1,12 +1,12 @@
 package com.example.cinefy.repository
 
-import com.example.cinefy.data.MovieApiService
+import MovieApiService
 import com.example.cinefy.ui.model.Movie
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MovieRepository(api: MovieApiService) {
-    private val api: MovieApiService
+class MovieRepository(private var api: MovieApiService) {
 
     init {
         val retrofit = Retrofit.Builder()
@@ -14,10 +14,15 @@ class MovieRepository(api: MovieApiService) {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        this.api = retrofit.create(MovieApiService::class.java)
+        api = retrofit.create(MovieApiService::class.java)
     }
 
     suspend fun getMovies(): List<Movie> {
-        return api.getMovies()
+        return try {
+            api.getMovies()
+        } catch (e: HttpException) {
+            // Manejo de errores
+            emptyList() // O maneja el error de otra manera
+        }
     }
 }

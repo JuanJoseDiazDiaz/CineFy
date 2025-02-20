@@ -1,9 +1,13 @@
-package com.example.cinefy.data
-
 import com.example.cinefy.ui.model.Movie
+import retrofit2.HttpException
+import kotlinx.coroutines.delay
 import retrofit2.http.GET
 
 interface MovieApiService {
-    @GET("/") // Solo el endpoint relativo
+    @GET("/movies")
     suspend fun getMovies(): List<Movie>
+
+
 }
+
+
