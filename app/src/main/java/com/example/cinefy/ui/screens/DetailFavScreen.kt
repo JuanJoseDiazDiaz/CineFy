@@ -33,7 +33,7 @@ import com.example.cinefy.ui.theme.extendedLight
 @Composable
 fun DetailFavScreen(
     movieTitle: String?, // Recibe el ID de la película desde la navegación
-    movieViewModel: MovieViewModel = viewModel(),
+    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
     navController: NavController,
     modifier: Modifier = Modifier
 ) {

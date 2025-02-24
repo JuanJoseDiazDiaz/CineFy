@@ -35,7 +35,7 @@ class FavListScreen : ComponentActivity() {
  * Implementacion por parameteros el viewModel para que se conecte entre si
  * */
 @Composable
-fun FavListScreenContent(movieViewModel: MovieViewModel = viewModel(), favoriteMovies: List<Movie>, modifier: Modifier = Modifier) {
+fun FavListScreenContent(movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory), favoriteMovies: List<Movie>, modifier: Modifier = Modifier) {
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     var favorites by remember { mutableStateOf(favoriteMovies) }

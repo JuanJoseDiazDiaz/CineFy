@@ -10,3 +10,7 @@ data class MovieUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
+enum class UserMessage {
+    ERROR_ACCESSING_DATASTORE,
+    ERROR_WRITING_DATASTORE,
+}

@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.cinefy.R
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.ui.model.Movie
@@ -38,7 +39,7 @@ fun MovieCard(Movie: Movie, onClick: () -> Unit) {
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .clickable { onClick()},
+                .clickable { onClick() },
             shape = MaterialTheme.shapes.medium,
         ) {
             Row(
@@ -47,9 +48,12 @@ fun MovieCard(Movie: Movie, onClick: () -> Unit) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    ImageComp(
-                        drawable = DataCinefy.getDrawableIdName(Movie.imageUrl),
+                    // Si Movie.imageUrl es una URL, usar Coil para cargar la imagen
+                    AsyncImage(
+                        model = Movie.imageUrl, // Asume que Movie.imageUrl es una URL
+                        contentDescription = "Movie Poster",
                         contentScale = ContentScale.Fit,
+                        modifier = Modifier.size(150.dp) // Ajusta el tamaño de la imagen según lo necesites
                     )
                     Box {
                         Row {
@@ -65,7 +69,6 @@ fun MovieCard(Movie: Movie, onClick: () -> Unit) {
                                     tint = if (fav_Movie) Color.Red else Color.Gray
                                 )
                             }
-
                         }
                     }
                 }

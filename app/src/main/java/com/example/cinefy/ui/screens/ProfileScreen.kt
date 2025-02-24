@@ -5,43 +5,35 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinefy.R
 import com.example.cinefy.data.UserPreferencesManager
-import com.example.cinefy.ui.movie.MovieViewModel
 import kotlinx.coroutines.launch
 
 class ProfileScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ProfileScreenContent(
-//                userName = stringResource(R.string.nameUser),
-//                userEmail = stringResource(R.string.emailUser)
-            )
+//            ProfileScreenContent(
+////                userName = stringResource(R.string.nameUser),
+////                userEmail = stringResource(R.string.emailUser)
+//            )
         }
     }
 }
 
 @Composable
-fun ProfileScreenContent(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val userPreferences = remember { UserPreferencesManager(context) }
-
+fun ProfileScreenContent(
+    userPreferences: UserPreferencesManager,  // Ahora lo pasamos como parámetro
+    modifier: Modifier = Modifier
+) {
     var nameUser by remember { mutableStateOf("") }
     var themePreference by remember { mutableStateOf("system") }
 
@@ -116,7 +108,7 @@ fun ProfileScreenContent(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, widthDp = 400)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreenContent(
-
-    )
+//    ProfileScreenContent(
+//
+//    )
 }

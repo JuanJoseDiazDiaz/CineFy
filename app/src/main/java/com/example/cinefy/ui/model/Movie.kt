@@ -8,7 +8,7 @@ data class Movie(
     @SerializedName("description") val description: String,
     @SerializedName("image") val imageUrl: String,
     @SerializedName("big_image") val bigImageUrl: String,
-    @SerializedName("genre") val genres: String,
+    @SerializedName("genre") val genres: List<String>,
     @SerializedName("thumbnail") val thumbnailUrl: String,
     @SerializedName("rating") val rating: Float,
     @SerializedName("id") val id: String,

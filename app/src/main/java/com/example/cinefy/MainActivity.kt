@@ -2,6 +2,7 @@ package com.example.cinefy
 
 import FavListScreenContent
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.data.DataCinefy.findMovieByTitle
 import com.example.cinefy.data.UserPreferencesManager
+import com.example.cinefy.repository.MovieRepository
 import com.example.cinefy.ui.model.Movie
 import com.example.cinefy.ui.screens.AboutUsScreen
 import com.example.cinefy.ui.screens.ContactarCreadorIntent
@@ -38,13 +41,21 @@ import com.example.cinefy.ui.theme.CinefyTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
+//Datastore. Configuración básica de la app.
+val Context.dataStore by preferencesDataStore(name = UserPreferencesManager.SETTINGS_FILE)
 class MainActivity : ComponentActivity() {
+    lateinit var userPreferencesRepository: UserPreferencesManager
+    lateinit var movieRepository: MovieRepository
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        //Creación de la instancia del repositorio de preferencias de usuario
+        userPreferencesRepository = UserPreferencesManager(dataStore)
 
-        val userPreferences = UserPreferencesManager(this)
+        val userPreferences = UserPreferencesManager(dataStore)
 
         // Recuperar y aplicar el tema guardado
         lifecycleScope.launch {
@@ -63,7 +74,7 @@ class MainActivity : ComponentActivity() {
                     "and his role in the development of the atomic bomb.",
             imageUrl = "openheimerposter",
             bigImageUrl = "openheimerposter",
-            genres = "History",
+            genres = listOf("Historia, Accion"),
             thumbnailUrl = "openheimerposter",
             rating = 8.6f,
             id = "top32",
@@ -100,6 +111,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("pag_Profile") {
                             ProfileScreenContent(
+                                userPreferences = userPreferences,
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }

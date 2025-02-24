@@ -24,7 +24,7 @@ import com.example.cinefy.ui.movie.MovieViewModel
 fun DetailItemScreen(
     movieTitle: String?, // Recibe el ID de la película desde la navegación
     navController: NavController,
-    movieViewModel: MovieViewModel = viewModel(),
+    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
     val uiState by movieViewModel.uiState.collectAsState()

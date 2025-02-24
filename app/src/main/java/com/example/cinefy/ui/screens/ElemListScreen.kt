@@ -29,9 +29,9 @@ import com.example.cinefy.ui.theme.extendedLight
 fun ElementListScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: MovieViewModel = viewModel() // ViewModel para obtener datos
+    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory) // ViewModel para obtener datos
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by movieViewModel.uiState.collectAsState()
     val movies = uiState.movies // Lista de películas obtenidas de la API
 
     val configuration = LocalConfiguration.current
@@ -41,10 +41,13 @@ fun ElementListScreen(
     val filteredMovies = movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
 
 
-    LaunchedEffect(Unit) {
-        if (movies.isEmpty()) {
-            viewModel.getMovies()
-        }
+//    LaunchedEffect(Unit) {
+//        if (movies.isEmpty()) {
+//            movieViewModel.getMovies()
+//        }
+//    }
+    LaunchedEffect(true) {
+        movieViewModel.getMovies()
     }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -68,14 +71,19 @@ fun ElementListScreen(
                 }
             }
             else -> {
-                // Muestra las películas
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(12.dp)
                 ) {
-                    items(uiState.movies) { movie ->
-                        MovieCard(movie) {
-                            navController.navigate("details_fav/${movie.id}")
+                    if (uiState.movies.isNotEmpty()) {  // ✅ Verifica si hay datos antes de renderizar
+                        items(uiState.movies) { movie ->
+                            MovieCard(movie) {
+                                navController.navigate("details_fav/${movie.id}")
+                            }
+                        }
+                    } else {
+                        item {
+                            Text(text = "No hay películas disponibles", modifier = Modifier.padding(16.dp))
                         }
                     }
                 }

@@ -37,7 +37,7 @@ import com.example.cinefy.ui.movie.MovieViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutUsScreen(
-    movieViewModel: MovieViewModel = viewModel(),
+    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
     modifier: Modifier = Modifier,
     nameApp: String = "Cinefy",
     tematica: String = "Cinematográfica",

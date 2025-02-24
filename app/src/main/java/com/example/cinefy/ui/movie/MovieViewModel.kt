@@ -1,21 +1,38 @@
 package com.example.cinefy.ui.movie
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.data.RetrofitInstance
+import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.repository.MovieRepository
-import com.example.cinefy.ui.model.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel : ViewModel() {
+class MovieViewModel(private val userPreferencesRepository: UserPreferencesManager) : ViewModel() {
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
 
     private val repository: MovieRepository = MovieRepository(RetrofitInstance.api)
     var isRequestInProgress = false
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                // Asegúrate de que estás accediendo a la aplicación correctamente
+                val application = this[APPLICATION_KEY] as MovieReleaseApplication
+                val userPreferencesRepository = application.userPreferencesRepository
+                MovieViewModel(userPreferencesRepository)
+            }
+        }
+    }
 
     init {
         // Llamar a getMovies directamente desde el init para cargar los datos
@@ -23,22 +40,15 @@ class MovieViewModel : ViewModel() {
     }
 
     fun getMovies() {
-        // Solo hace la petición si no hay otra en curso
-        if (isRequestInProgress) return
-
-        isRequestInProgress = true
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)  // Muestra el cargador
             try {
-                // Realiza la solicitud a la API usando el repositorio
-                val movies = repository.getMovies()  // Obtiene las películas
-                // Actualiza el estado con las películas obtenidas
-                _uiState.value = MovieUiState(movies = movies)
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                val movies = repository.getMovies()
+                Log.d("API Response", "Movies: $movies") // 🔍 Verifica que se están obteniendo datos
+                _uiState.value = _uiState.value.copy(movies = movies, isLoading = false)
             } catch (e: Exception) {
-                // Maneja los errores y actualiza el estado de la UI con el mensaje de error
-                _uiState.value = MovieUiState(errorMessage = e.message)
-            } finally {
-                isRequestInProgress = false
+                Log.e("API Error", "Exception: ${e.message}") // 📌 Muestra si hay error
+                _uiState.value = _uiState.value.copy(errorMessage = e.message, isLoading = false)
             }
         }
     }
@@ -46,22 +56,12 @@ class MovieViewModel : ViewModel() {
     // Reseteo de datos del usuario
     fun resetDataUser() {
         _uiState.value = MovieUiState(
-//            nameUser = nameUser ?: "Usuario Desconocido",
-//            passwordUser = passwordUser ?: "Contraseña No Establecida",
-//            emailUser = emailUser ?: "Email No Establecido"
+            // Datos de usuario a restablecer si es necesario
         )
     }
 
     // Inicializa el ViewModel con valores si están disponibles
     fun initializeUserData(name: String, password: String, email: String) {
-//        nameUser = name
-//        passwordUser = password
-//        emailUser = email
-//        resetDataUser()
-    }
-
-    // Inicializa el estado con valores predeterminados
-    init {
-        resetDataUser()
+        // Lógica para inicializar datos del usuario
     }
 }

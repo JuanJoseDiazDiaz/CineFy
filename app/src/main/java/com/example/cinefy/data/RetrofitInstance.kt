@@ -1,58 +1,42 @@
 package com.example.cinefy.data
 
-import MovieApiService
+import com.example.cinefy.interfaces.MovieApiService
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.Interceptor
-import okhttp3.Response
 
 object RetrofitInstance {
+    private const val API_KEY = "9de9122946msh3ae41b92c66a5eap1a7914jsnfcef8c05faf0"
+    private const val API_HOST = "imdb-top-100-movies.p.rapidapi.com"
     private const val BASE_URL = "https://imdb-top-100-movies.p.rapidapi.com/"
-    private const val API_KEY = "3b4bc50058msh5f391f156e812e6p16fdd0jsn7949097109f6"  // Reemplaza con tu token de autenticación
+    private const val MAX_RETRIES = 3
+    private const val INITIAL_DELAY = 2L
 
-    // Crear un interceptor para agregar el token en las cabeceras
     private val interceptor = Interceptor { chain ->
-        var response: Response
-        var attempt = 0
-        val maxRetries = 3 // Número máximo de reintentos
+        val request = chain.request().newBuilder()
+            .addHeader("x-rapidapi-key", API_KEY)
+            .addHeader("x-rapidapi-host", API_HOST)
+            .build()
 
-        while (true) {
-            // Crear la solicitud con el token de autorización
-            val request = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $API_KEY")
-                .build()
+        val response = chain.proceed(request)
 
-            response = chain.proceed(request)
+        println("➡️ Request: ${request.url} | Headers: ${request.headers}")
+        println("⬅️ Response: ${response.code} - ${response.message}")
 
-            try {
-                if (response.code == 429 && attempt < maxRetries) {
-                    val retryAfter = response.header("Retry-After")?.toLongOrNull() ?: 2
-                    Thread.sleep(retryAfter * 1000)
-                    attempt++
-                    continue  // Si es 429, reintenta la solicitud
-                }
-                break  // Si no es 429 o no hay más reintentos, salimos del ciclo
-            } finally {
-                response.close()  // Cerramos la respuesta al finalizar el intento
-            }
-        }
-
-        response  // Retornamos la última respuesta (exitosa o no)
+        response
     }
 
-
-    // Crear el cliente OkHttp con el interceptor
     private val client = OkHttpClient.Builder()
-        .addInterceptor(interceptor)  // Añadir el interceptor para manejar el error 429
+        .addInterceptor(interceptor)
         .build()
 
-    // Crear la instancia Retrofit para hacer las solicitudes a la API
     val api: MovieApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(client)  // Usar el cliente con el interceptor
-            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create()) // Usando solo GsonConverterFactory
             .build()
             .create(MovieApiService::class.java)
     }
