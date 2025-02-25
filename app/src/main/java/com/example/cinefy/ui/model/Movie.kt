@@ -16,4 +16,37 @@ data class Movie(
     @SerializedName("imdbid") val imdbId: String,
     @SerializedName("imdb_link") val imdbLink: String,
 )
+fun Movie.toMovieEntity(): MovieEntity {
+    return MovieEntity(
+        rank = this.rank,
+        title = this.title,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        bigImageUrl = this.bigImageUrl,
+        genres = this.genres,
+        thumbnailUrl = this.thumbnailUrl,
+        rating = this.rating,
+        id = this.id,
+        year = this.year,
+        imdbId = this.imdbId,
+        imdbLink = this.imdbLink,
+    )
+}
+
+fun MovieEntity.toMovie(): Movie {
+    return Movie(
+        rank = this.rank,
+        title = this.title,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        bigImageUrl = this.bigImageUrl,
+        genres = this.genres,
+        thumbnailUrl = this.thumbnailUrl,
+        rating = this.rating,
+        id = this.id,
+        year = this.year,
+        imdbId = this.imdbId,
+        imdbLink = this.imdbLink,
+    )
+}
 

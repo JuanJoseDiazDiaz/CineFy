@@ -1,25 +1,29 @@
 package com.example.cinefy.ui.localdatabase
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.example.cinefy.ui.model.MovieEntity
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.synchronized
+import com.example.cinefy.ui.localdatabase.Converters  // Importa la clase de conversión
 
 @Database(entities = [MovieEntity::class], version = 1, exportSchema = false)
-abstract class MovieDatabase : RoomDatabase(){
-abstract fun moviesDAO() : MovieDao
-    companion object{
+@TypeConverters(Converters::class) // ⚠️ Agregar esto para manejar List<String>
+abstract class MovieDatabase : RoomDatabase() {
+    abstract fun moviesDAO(): MovieDao
+
+    companion object {
         @Volatile
-        private var Instance: MovieDatabase? = null
-        @OptIn(InternalCoroutinesApi::class)
-        fun getDataBases(context: Context): MovieDatabase{
-            return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, MovieDatabase::class.java, "cinefy_database")
+        private var INSTANCE: MovieDatabase? = null
+
+        fun getDatabase(context: Context): MovieDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    MovieDatabase::class.java,
+                    "cinefy_database"
+                ).fallbackToDestructiveMigration()
                     .build()
-                    .also { Instance = it }
+                INSTANCE = instance
+                instance
             }
         }
     }

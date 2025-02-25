@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class UserPreferencesManager(private val dataStore: DataStore<Preferences>) {
-
     companion object {
         val SETTINGS_FILE: String = "user_prefs"
         val USERNAME_KEY = stringPreferencesKey("username")

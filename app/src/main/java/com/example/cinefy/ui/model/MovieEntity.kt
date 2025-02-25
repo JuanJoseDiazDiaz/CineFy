@@ -17,7 +17,7 @@ data class MovieEntity(
     @ColumnInfo(name = "bigImageUrl")
     val bigImageUrl: String,
     @ColumnInfo(name = "genres")
-    val genres: String,
+    val genres: List<String>,
     @ColumnInfo(name = "thumbnailUrl")
     val thumbnailUrl: String,
     @ColumnInfo(name = "rating")
