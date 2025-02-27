@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,8 +22,10 @@ import androidx.navigation.NavController
 import com.example.cinefy.R
 import com.example.cinefy.ui.model.Movie
 import com.example.cinefy.ui.componets.MovieCard
+import com.example.cinefy.ui.model.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.theme.extendedLight
+
 /**
  * Implementacion por parameteros el viewModel para que se conecte entre si
  * */
@@ -40,14 +44,10 @@ fun ElementListScreen(
     var searchQuery by remember { mutableStateOf("") }
     val filteredMovies = movies.filter { it.title.contains(searchQuery, ignoreCase = true) }
 
-
-//    LaunchedEffect(Unit) {
-//        if (movies.isEmpty()) {
-//            movieViewModel.getMovies()
-//        }
-//    }
-    LaunchedEffect(true) {
-        movieViewModel.getMovies()
+    LaunchedEffect(Unit) {
+        if (movies.isEmpty()) {
+            movieViewModel.getMovies()
+        }
     }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -75,11 +75,11 @@ fun ElementListScreen(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(12.dp)
                 ) {
-                    if (uiState.movies.isNotEmpty()) {  // ✅ Verifica si hay datos antes de renderizar
-                        items(uiState.movies) { movie ->
-                            MovieCard(movie) {
-                                navController.navigate("details_fav/${movie.id}")
-                            }
+                    if (filteredMovies.isNotEmpty()) {
+                        items(filteredMovies) { movie ->
+                            MovieCard(movie = movie, onClick = {
+                                navController.navigate("details_fav/${movie.title}")
+                            }, movieViewModel = movieViewModel)
                         }
                     } else {
                         item {
@@ -96,7 +96,7 @@ fun ElementListScreen(
 @Preview(showBackground = true)
 @Composable
 fun HeroListScreenPreview() {
-//    ElemtListScreen(DataSource.movieList())
+//    ElementListScreen(DataSource.movieList())
 }
 
 val LocalExtendedColorScheme = staticCompositionLocalOf {
@@ -172,7 +172,8 @@ fun MedHeaderCompConBuscador(title: String, searchQuery: String, onQueryChange: 
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            placeholder = { Text(stringResource(R.string.search_placeholder)) })
+            placeholder = { Text(stringResource(R.string.search_placeholder)) }
+        )
     }
 }
 
@@ -192,7 +193,6 @@ fun MedHeaderCompDetail(title: String, navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth(),
         ) {
-            // Aquí no estaría mal la verdad
             IconButton(onClick = { navController.navigateUp() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,

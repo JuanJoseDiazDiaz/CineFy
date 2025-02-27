@@ -5,7 +5,7 @@ import androidx.room.*
 import com.example.cinefy.ui.model.MovieEntity
 import com.example.cinefy.ui.localdatabase.Converters  // Importa la clase de conversión
 
-@Database(entities = [MovieEntity::class], version = 1, exportSchema = false)
+@Database(entities = [MovieEntity::class], version = 4, exportSchema = false)
 @TypeConverters(Converters::class) // ⚠️ Agregar esto para manejar List<String>
 abstract class MovieDatabase : RoomDatabase() {
     abstract fun moviesDAO(): MovieDao

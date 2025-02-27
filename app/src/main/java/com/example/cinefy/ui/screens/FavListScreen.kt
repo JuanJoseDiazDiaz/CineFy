@@ -1,6 +1,8 @@
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -9,17 +11,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.cinefy.R
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.ui.model.Movie
 import com.example.cinefy.ui.componets.ImageComp
+import com.example.cinefy.ui.model.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.MedHeaderComp
 
@@ -27,7 +35,7 @@ class FavListScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FavListScreenContent(favoriteMovies = DataCinefy.movieList())
+//            FavListScreenContent()
         }
     }
 }
@@ -35,34 +43,17 @@ class FavListScreen : ComponentActivity() {
  * Implementacion por parameteros el viewModel para que se conecte entre si
  * */
 @Composable
-fun FavListScreenContent(movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory), favoriteMovies: List<Movie>, modifier: Modifier = Modifier) {
+fun FavListScreenContent(
+    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
-    var favorites by remember { mutableStateOf(favoriteMovies) }
-    if(isExpanded){
-       Column (modifier = modifier.padding(10.dp)){
-           MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
-           LazyVerticalGrid(
-               columns = GridCells.Fixed(2),
-               contentPadding = PaddingValues(
-                   start = 12.dp,
-                   top = 50.dp,
-                   end = 12.dp,
-                   bottom = 16.dp
-               ),
-               content = {
-                   items(favorites) { movie ->
-                       MovieCardWithRemoveButton(
-                           movie,
-                           onRemove = { removedMovie ->
-                               favorites = favorites.filter { it != removedMovie }
-                           })
-                   }
-               }
-           )
-       }
-    }else{
-        Column (modifier = modifier.padding(10.dp)){
+    val favoriteMovies by movieViewModel.favoriteMovies.observeAsState(emptyList())
+
+    if (isExpanded) {
+        Column(modifier = modifier.padding(10.dp)) {
             MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -71,24 +62,53 @@ fun FavListScreenContent(movieViewModel: MovieViewModel = viewModel(factory = Mo
                     top = 50.dp,
                     end = 12.dp,
                     bottom = 16.dp
-                ),
-                content = {
-                    items(favorites) { movie ->
-                        MovieCardWithRemoveButton(
-                            movie,
-                            onRemove = { removedMovie ->
-                                favorites = favorites.filter { it != removedMovie }
-                            })
-                    }
+                )
+            ) {
+                items(favoriteMovies) { movie ->
+                    MovieCardWithRemoveButton(
+                        movie,
+                        onClickNavegator = {
+                            navController.navigate("details_fav/${movie.title}")
+                        },
+                        onRemove = { removedMovie ->
+                            movieViewModel.removeMovie(removedMovie.toMovieEntity())
+                        }
+                    )
                 }
-            )
+            }
+        }
+    } else {
+        Column(modifier = modifier.padding(10.dp)) {
+            MedHeaderComp(title = stringResource(R.string.DetailFavoritos))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(
+                    start = 12.dp,
+                    top = 50.dp,
+                    end = 12.dp,
+                    bottom = 16.dp
+                )
+            ) {
+                items(favoriteMovies) { movie ->
+                    MovieCardWithRemoveButton(
+                        movie,
+                        onClickNavegator = {
+                            navController.navigate("details_fav/${movie.title}")
+                        },
+                        onRemove = { removedMovie ->
+                            movieViewModel.removeMovie(removedMovie.toMovieEntity())
+                        }
+                    )
+                }
+            }
         }
     }
-
 }
 
+
+
 @Composable
-fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
+fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit, onClickNavegator: () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -96,7 +116,7 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MovieCardDetail(movie)
+        MovieCardDetail(movie, onClickNavegator)
         Spacer(modifier = Modifier.height(8.dp))
         IconButton(onClick = { showDialog = true }) {
             Icon(
@@ -131,21 +151,27 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit) {
 }
 
 
+
 @Preview(showBackground = true)
 @Composable
 fun FavListScreenPreview() {
-    FavListScreenContent(favoriteMovies = DataCinefy.movieList())
+//    FavListScreenContent()
 }
 
 @Composable
-fun MovieCardDetail(movie: Movie) {
+fun MovieCardDetail(movie: Movie, onClick: () -> Unit) {
     Row {
         Card(
             modifier = Modifier
-                .padding(8.dp),
+                .padding(8.dp).clickable { onClick() },
             shape = MaterialTheme.shapes.medium,
         ) {
-            ImageComp(drawable = DataCinefy.getDrawableIdName(movie.imageUrl))
+            AsyncImage(
+                model = movie.imageUrl, // Asume que Movie.imageUrl es una URL
+                contentDescription = "Movie Poster",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(150.dp) // Ajusta el tamaño de la imagen según lo necesites
+            )
         }
     }
 }

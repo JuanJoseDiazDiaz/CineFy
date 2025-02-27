@@ -1,17 +1,19 @@
 package com.example.cinefy.ui.localdatabase
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.cinefy.ui.model.Movie
+import androidx.room.Update
+import com.example.cinefy.ui.model.Comment
 import com.example.cinefy.ui.model.MovieEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
     // Inserta una lista de películas en la base de datos
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<MovieEntity>)
 
     // Obtiene todas las películas ordenadas por título
@@ -45,4 +47,17 @@ interface MovieDao {
     // Obtiene un número específico de películas aleatorias por título, de forma suspendida
     @Query("SELECT * FROM movies WHERE title LIKE :title ORDER BY RANDOM() LIMIT :number")
     suspend fun getOnceSomeRandomMoviesByTitle(title: String, number: Int): List<MovieEntity>
+
+    // Elimina una película específica de la base de datos
+    @Delete
+    suspend fun deleteMovie(movie: MovieEntity)
+
+    @Query("SELECT * FROM movies WHERE isFavorite = 1")
+    fun getFavoriteMovies(): Flow<List<MovieEntity>>
+
+    @Update
+    suspend fun updateMovie(movie: MovieEntity)
+
+    @Query("UPDATE movies SET comments = :comments WHERE title = :title")
+    suspend fun updateComments(title: String, comments: List<Comment>)
 }

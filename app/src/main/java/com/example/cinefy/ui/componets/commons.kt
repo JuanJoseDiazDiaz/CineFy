@@ -86,7 +86,7 @@ fun ListCompactScreen(movies: MutableList<Movie>, navController: NavController, 
     Column(modifier = modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             items(movies) { movie ->
-               MovieCard(movie, onClick = {navController.navigateUp()})
+//               MovieCard(movie, onClick = {navController.navigateUp()})
             }
         }
     }
@@ -98,7 +98,7 @@ fun ListMedExpScreen(movies: MutableList<Movie>, navController: NavController, m
         MedHeaderComp(title = "Pantalla media o grande")
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             items(movies) { movie ->
-                MovieCard(movie, onClick = {navController.navigateUp()})
+//                MovieCard(movie, onClick = {navController.navigateUp()})
             }
         }
     }

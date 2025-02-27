@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
             CinefyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        if (windowSize == WindowWidthSizeClass.Compact && currentRoute?.contains("details") == false)
+//                        if (windowSize == WindowWidthSizeClass.Compact && currentRoute?.contains("details") == false)
                             BottomNavigationBar(navController, currentRoute)
                     }) { innerPadding ->
                     NavHost(navController = navController, startDestination = "movie_list") {
@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("lista_Fav") {
                             FavListScreenContent(
-                                favoriteMovies = movies,
+                                navController = navController,
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }

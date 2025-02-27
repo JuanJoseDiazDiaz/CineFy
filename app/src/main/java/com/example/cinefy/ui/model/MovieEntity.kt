@@ -3,6 +3,7 @@ package com.example.cinefy.ui.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.cinefy.ui.model.Comment
 
 @Entity(tableName = "movies")
 data class MovieEntity(
@@ -30,4 +31,47 @@ data class MovieEntity(
     val imdbId: String,
     @ColumnInfo(name = "imdbLink")
     val imdbLink: String,
+
+    // Esta varibales gestion acciones de la aplicacion
+    val isFavorite: Boolean = false,
+    val comments: List<Comment> = emptyList()// Lista de comentarios
 )
+
+data class Comment(val author: String, val content: String)
+
+fun Movie.toMovieEntity(isFavorite: Boolean = false): MovieEntity {
+    return MovieEntity(
+        rank = this.rank,
+        title = this.title,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        bigImageUrl = this.bigImageUrl,
+        genres = this.genres,
+        thumbnailUrl = this.thumbnailUrl,
+        rating = this.rating,
+        id = this.id,
+        year = this.year,
+        imdbId = this.imdbId,
+        imdbLink = this.imdbLink,
+        isFavorite = isFavorite,
+        comments = emptyList() // Añadir comentarios
+    )
+}
+
+fun MovieEntity.toMovie(): Movie {
+    return Movie(
+        rank = this.rank,
+        title = this.title,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        bigImageUrl = this.bigImageUrl,
+        genres = this.genres,
+        thumbnailUrl = this.thumbnailUrl,
+        rating = this.rating,
+        id = this.id,
+        year = this.year,
+        imdbId = this.imdbId,
+        imdbLink = this.imdbLink,
+    )
+}
+

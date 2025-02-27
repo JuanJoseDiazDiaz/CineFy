@@ -1,6 +1,7 @@
 package com.example.cinefy.ui.model
 
 import com.google.gson.annotations.SerializedName
+import org.w3c.dom.Comment
 
 data class Movie(
     @SerializedName("rank") val rank: Int,
@@ -15,38 +16,7 @@ data class Movie(
     @SerializedName("year") val year: Int,
     @SerializedName("imdbid") val imdbId: String,
     @SerializedName("imdb_link") val imdbLink: String,
+//    @Transient val isFavorite: Boolean = false // Añadir el campo isFavorite
 )
-fun Movie.toMovieEntity(): MovieEntity {
-    return MovieEntity(
-        rank = this.rank,
-        title = this.title,
-        description = this.description,
-        imageUrl = this.imageUrl,
-        bigImageUrl = this.bigImageUrl,
-        genres = this.genres,
-        thumbnailUrl = this.thumbnailUrl,
-        rating = this.rating,
-        id = this.id,
-        year = this.year,
-        imdbId = this.imdbId,
-        imdbLink = this.imdbLink,
-    )
-}
 
-fun MovieEntity.toMovie(): Movie {
-    return Movie(
-        rank = this.rank,
-        title = this.title,
-        description = this.description,
-        imageUrl = this.imageUrl,
-        bigImageUrl = this.bigImageUrl,
-        genres = this.genres,
-        thumbnailUrl = this.thumbnailUrl,
-        rating = this.rating,
-        id = this.id,
-        year = this.year,
-        imdbId = this.imdbId,
-        imdbLink = this.imdbLink,
-    )
-}
 

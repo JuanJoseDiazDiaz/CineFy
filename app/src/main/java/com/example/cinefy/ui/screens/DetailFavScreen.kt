@@ -79,7 +79,7 @@ fun DetailFavScreen(
 }
 
 @Composable
-fun MovieCardDetailWithFavButton2(movie: Movie) {
+fun MovieCardDetailWithFavButton2(movie: Movie,  movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)) {
     var isFavorite by remember { mutableStateOf(false) } // Estado del botón de favoritos
 
     LazyColumn(
@@ -88,7 +88,7 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
     ) {
         // Mostrar la tarjeta de detalles de la película
         item {
-            MovieCardDetail(movie)
+            MovieCardDetail(movie, movieViewModel)
         }
 
         // Espacio entre la tarjeta y el siguiente contenido

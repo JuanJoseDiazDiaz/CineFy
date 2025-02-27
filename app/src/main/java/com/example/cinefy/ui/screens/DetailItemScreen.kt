@@ -67,14 +67,14 @@ fun DetailItemScreen(
 }
 
 @Composable
-fun MovieCardDetailWithFavButton(movie: Movie) {
+fun MovieCardDetailWithFavButton(movie: Movie, movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),) {
     var isFavorite by remember { mutableStateOf(false) }
 
     LazyColumn(
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item { MovieCardDetail(movie) }
+        item { MovieCardDetail(movie, movieViewModel) }
         item { Spacer(modifier = Modifier.height(8.dp)) }
         item {
             Button(onClick = { isFavorite = !isFavorite }) {

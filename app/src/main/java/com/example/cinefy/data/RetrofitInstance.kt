@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val API_KEY = "9de9122946msh3ae41b92c66a5eap1a7914jsnfcef8c05faf0"
+    private const val API_KEY = "3b4bc50058msh5f391f156e812e6p16fdd0jsn7949097109f6"
     private const val API_HOST = "imdb-top-100-movies.p.rapidapi.com"
     private const val BASE_URL = "https://imdb-top-100-movies.p.rapidapi.com/"
     private const val MAX_RETRIES = 3
