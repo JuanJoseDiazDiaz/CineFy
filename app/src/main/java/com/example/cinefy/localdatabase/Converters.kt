@@ -1,9 +1,9 @@
-package com.example.cinefy.ui.localdatabase
+package com.example.cinefy.localdatabase
 
 import androidx.room.TypeConverter
+import com.example.cinefy.datamodel.Comment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.example.cinefy.ui.model.Comment
 
 class Converters {
     private val gson = Gson()

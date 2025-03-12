@@ -31,6 +31,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cinefy.R
 import com.example.cinefy.ui.componets.StandardButtonImage
 import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MedHeaderComp
+
 /**
  * Implementacion por parameteros el viewModel para que se conecte entre si
  * */

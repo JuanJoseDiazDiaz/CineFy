@@ -1,7 +1,6 @@
-package com.example.cinefy.interfaces
+package com.example.cinefy.api
 
-import com.example.cinefy.ui.model.Movie
-import retrofit2.Call
+import com.example.cinefy.datamodel.Movie
 import retrofit2.http.GET
 
 interface MovieApiService {

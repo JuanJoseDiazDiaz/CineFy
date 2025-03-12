@@ -1,9 +1,8 @@
-package com.example.cinefy.ui.model
+package com.example.cinefy.datamodel
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.cinefy.ui.model.Comment
 
 @Entity(tableName = "movies")
 data class MovieEntity(
@@ -36,9 +35,6 @@ data class MovieEntity(
     val isFavorite: Boolean = false,
     val comments: List<Comment> = emptyList()// Lista de comentarios
 )
-
-data class Comment(val author: String, val content: String)
-
 fun Movie.toMovieEntity(isFavorite: Boolean = false): MovieEntity {
     return MovieEntity(
         rank = this.rank,

@@ -1,4 +1,4 @@
-package com.example.cinefy.ui.screens
+package com.example.cinefy.ui.screens.movieElementList
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -6,8 +6,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,10 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.R
-import com.example.cinefy.ui.model.Movie
 import com.example.cinefy.ui.componets.MovieCard
-import com.example.cinefy.ui.model.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 import com.example.cinefy.ui.theme.extendedLight
 
 /**
@@ -33,7 +30,8 @@ import com.example.cinefy.ui.theme.extendedLight
 fun ElementListScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory) // ViewModel para obtener datos
+    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory), // ViewModel para obtener datos
+    favViewModel: FavListScrenViewModel = viewModel(factory = FavListScrenViewModel.Factory)
 ) {
     val uiState by movieViewModel.uiState.collectAsState()
     val movies = uiState.movies // Lista de películas obtenidas de la API
@@ -79,7 +77,7 @@ fun ElementListScreen(
                         items(filteredMovies) { movie ->
                             MovieCard(movie = movie, onClick = {
                                 navController.navigate("details_fav/${movie.title}")
-                            }, movieViewModel = movieViewModel)
+                            }, movieViewModel)
                         }
                     } else {
                         item {

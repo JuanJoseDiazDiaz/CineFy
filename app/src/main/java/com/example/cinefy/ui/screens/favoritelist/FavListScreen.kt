@@ -1,7 +1,7 @@
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,12 +23,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.cinefy.R
-import com.example.cinefy.data.DataCinefy
-import com.example.cinefy.ui.model.Movie
-import com.example.cinefy.ui.componets.ImageComp
-import com.example.cinefy.ui.model.toMovieEntity
+import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
-import com.example.cinefy.ui.screens.MedHeaderComp
+import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
+import com.example.cinefy.ui.screens.movieElementList.MedHeaderComp
 
 class FavListScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +43,7 @@ class FavListScreen : ComponentActivity() {
 @Composable
 fun FavListScreenContent(
     movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
+    favListViewModel: FavListScrenViewModel = viewModel(factory = FavListScrenViewModel.Factory),
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -71,7 +70,7 @@ fun FavListScreenContent(
                             navController.navigate("details_fav/${movie.title}")
                         },
                         onRemove = { removedMovie ->
-                            movieViewModel.removeMovie(removedMovie.toMovieEntity())
+                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity()) // Aquí utilizamos el método borrarFavorito
                         }
                     )
                 }
@@ -96,7 +95,7 @@ fun FavListScreenContent(
                             navController.navigate("details_fav/${movie.title}")
                         },
                         onRemove = { removedMovie ->
-                            movieViewModel.removeMovie(removedMovie.toMovieEntity())
+                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity()) // Aquí utilizamos el método borrarFavorito
                         }
                     )
                 }
@@ -104,8 +103,6 @@ fun FavListScreenContent(
         }
     }
 }
-
-
 
 @Composable
 fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit, onClickNavegator: () -> Unit) {
@@ -149,6 +146,12 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit, onClickNa
         )
     }
 }
+
+
+
+
+
+
 
 
 

@@ -11,14 +11,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.data.RetrofitInstance
 import com.example.cinefy.data.UserPreferencesManager
+import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.repository.MovieRepository
-import com.example.cinefy.ui.localdatabase.MovieDao
-import com.example.cinefy.ui.localdatabase.MovieDatabase
-import com.example.cinefy.ui.model.Comment
-import com.example.cinefy.ui.model.Movie
-import com.example.cinefy.ui.model.MovieEntity
-import com.example.cinefy.ui.model.toMovie
-import com.example.cinefy.ui.model.toMovieEntity
+import com.example.cinefy.localdatabase.MovieDao
+import com.example.cinefy.localdatabase.MovieDatabase
+import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.datamodel.MovieEntity
+import com.example.cinefy.datamodel.toMovie
+import com.example.cinefy.datamodel.toMovieEntity
+import com.example.cinefy.repository.FavoriteListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,8 @@ import kotlinx.coroutines.withContext
 
 class MovieViewModel(
     private val userPreferencesRepository: UserPreferencesManager,
-    private val movieDao: MovieDao
+    private val movieDao: MovieDao,
+    private val favoriteListRepository: FavoriteListRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieUiState())
@@ -47,7 +49,7 @@ class MovieViewModel(
                 val application = (this[APPLICATION_KEY] as MovieReleaseApplication)
                 val userPreferencesRepository = application.userPreferencesRepository
                 val database = MovieDatabase.getDatabase(application)
-                MovieViewModel(userPreferencesRepository, database.moviesDAO())
+                MovieViewModel(userPreferencesRepository, database.moviesDAO(), application.listRepository)
             }
         }
     }
@@ -112,17 +114,47 @@ class MovieViewModel(
         }
     }
 
-
-    fun toggleFavorite(movie: Movie) {
+    // Agregar esta función para sincronizar los favoritos
+    fun updateFavorites(movie: MovieEntity) {
         viewModelScope.launch {
-            val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.toMovieEntity().isFavorite)
-            movieDao.updateMovie(updatedMovieEntity)
+            movieDao.updateMovie(movie)
         }
     }
 
+    fun toggleFavorite(movie: Movie) {
+        viewModelScope.launch {
+            try {
+                // Cambiar el estado de la película en la base de datos
+                val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.isFavorite)
+                movieDao.updateMovie(updatedMovieEntity)
+
+                // Actualizar la UI en el ViewModel
+                val updatedMovies = _uiState.value.movies.map { movieItem ->
+                    if (movieItem.id == movie.id) {
+                        movieItem.copy(isFavorite = !movieItem.isFavorite)
+                    } else movieItem
+                }
+
+                // Actualizar el estado con los cambios
+                _uiState.value = _uiState.value.copy(movies = updatedMovies)
+
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(errorMessage = "Error al actualizar favorito: ${e.message}")
+            }
+        }
+    }
+
+    // Eliminar película de favoritos y sincronizar con el repositorio
     fun removeMovie(movie: MovieEntity) {
         viewModelScope.launch {
-            movieDao.deleteMovie(movie)
+            try {
+                favoriteListRepository.delete(movie) // Usamos el repositorio para eliminar
+                // Sincronizar en la UI
+                val updatedMovies = _uiState.value.movies.filter { it.id != movie.id }
+                _uiState.value = _uiState.value.copy(movies = updatedMovies)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(errorMessage = "Error al eliminar la película: ${e.message}")
+            }
         }
     }
 
@@ -135,6 +167,7 @@ class MovieViewModel(
         // Lógica para inicializar datos del usuario
     }
 }
+
 
 
 

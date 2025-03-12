@@ -1,7 +1,7 @@
 package com.example.cinefy.data
 
 import com.example.cinefy.R
-import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.datamodel.Movie
 
 object DataCinefy {
     val movieList: () -> MutableList<Movie> = {

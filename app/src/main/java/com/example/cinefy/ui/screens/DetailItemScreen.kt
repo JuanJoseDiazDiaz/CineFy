@@ -16,9 +16,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.R
-import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.componets.MovieCardDetail
 import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MedHeaderCompDetail
 
 @Composable
 fun DetailItemScreen(

@@ -1,13 +1,15 @@
-package com.example.cinefy.ui.localdatabase
+package com.example.cinefy.localdatabase
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.cinefy.ui.model.Comment
-import com.example.cinefy.ui.model.MovieEntity
+import com.example.cinefy.datamodel.Comment
+import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.datamodel.MovieEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,9 +18,15 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(movies: List<MovieEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insert(movie: MovieEntity)
+
     // Obtiene todas las películas ordenadas por título
     @Query("SELECT * FROM movies ORDER BY title ASC")
     fun getAllMovies(): List<MovieEntity>
+    // Obtiene todas las películas ordenadas por título
+    @Query("SELECT * FROM movies ORDER BY title ASC")
+    fun getAllMoviesFlow(): Flow<List<MovieEntity>>
 
     // Obtiene una película por su título
     @Query("SELECT * FROM movies WHERE title LIKE :title LIMIT 1")
@@ -60,4 +68,5 @@ interface MovieDao {
 
     @Query("UPDATE movies SET comments = :comments WHERE title = :title")
     suspend fun updateComments(title: String, comments: List<Comment>)
+
 }

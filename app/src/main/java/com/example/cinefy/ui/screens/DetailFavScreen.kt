@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.R
-import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.componets.MovieCardDetail
 import com.example.cinefy.ui.movie.MovieViewModel
-import com.example.cinefy.ui.screens.MedHeaderCompDetail
+import com.example.cinefy.ui.screens.movieElementList.MedHeaderCompDetail
 import com.example.cinefy.ui.theme.extendedLight
 
 /**
@@ -79,7 +79,7 @@ fun DetailFavScreen(
 }
 
 @Composable
-fun MovieCardDetailWithFavButton2(movie: Movie,  movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)) {
+fun MovieCardDetailWithFavButton2(movie: Movie, movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)) {
     var isFavorite by remember { mutableStateOf(false) } // Estado del botón de favoritos
 
     LazyColumn(

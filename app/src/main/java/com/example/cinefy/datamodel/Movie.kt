@@ -1,7 +1,6 @@
-package com.example.cinefy.ui.model
+package com.example.cinefy.datamodel
 
 import com.google.gson.annotations.SerializedName
-import org.w3c.dom.Comment
 
 data class Movie(
     @SerializedName("rank") val rank: Int,
@@ -16,7 +15,7 @@ data class Movie(
     @SerializedName("year") val year: Int,
     @SerializedName("imdbid") val imdbId: String,
     @SerializedName("imdb_link") val imdbLink: String,
-//    @Transient val isFavorite: Boolean = false // Añadir el campo isFavorite
+    @Transient val isFavorite: Boolean = false // Añadir el campo isFavorite
 )
 
 

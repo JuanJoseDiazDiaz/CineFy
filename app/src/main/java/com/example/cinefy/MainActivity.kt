@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,15 +26,15 @@ import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.data.DataCinefy.findMovieByTitle
 import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.repository.MovieRepository
-import com.example.cinefy.ui.model.Movie
+import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.screens.AboutUsScreen
 import com.example.cinefy.ui.screens.ContactarCreadorIntent
 
-import com.example.cinefy.ui.screens.ProfileScreenContent
+import com.example.cinefy.ui.screens.profileScreen.ProfileScreenContent
 import com.example.cinefy.ui.componets.BottomNavigationBar
 import com.example.cinefy.ui.screens.DetailFavScreen
 import com.example.cinefy.ui.screens.DetailItemScreen
-import com.example.cinefy.ui.screens.ElementListScreen
+import com.example.cinefy.ui.screens.movieElementList.ElementListScreen
 import com.example.cinefy.utils.getWindowSizeClass
 import com.example.cinefy.ui.theme.CinefyTheme
 import kotlinx.coroutines.flow.collectLatest

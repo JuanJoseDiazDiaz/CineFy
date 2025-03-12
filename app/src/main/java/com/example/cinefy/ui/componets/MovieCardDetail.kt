@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -28,10 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import coil.compose.AsyncImage
 import com.example.cinefy.R
-import com.example.cinefy.data.DataCinefy
-import com.example.cinefy.ui.model.Comment
-import com.example.cinefy.ui.model.Movie
-import com.example.cinefy.ui.model.toMovieEntity
+import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
 
 @Composable
@@ -115,7 +112,7 @@ fun MovieCardDetail(movie: Movie, movieViewModel: MovieViewModel) {
             },
             confirmButton = {
                 TextButton(onClick = {
-                    movieViewModel.addComment(movie.title, Comment(commentAuthor, commentContent))
+//                    movieViewModel.addComment(movie.title, Comment(commentAuthor, commentContent))
                     showCommentDialog = false
                 }) {
                     Text(text = "Añadir")

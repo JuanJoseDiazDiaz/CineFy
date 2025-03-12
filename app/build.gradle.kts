@@ -1,6 +1,3 @@
-
-
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.cinefy"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.cinefy"
