@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FavListScrenViewModel(
@@ -68,20 +69,26 @@ class FavListScrenViewModel(
         }
     }
 
-    // Borrar un favorito de la base de datos
-    fun borrarFavorito(item: MovieEntity) {
+    fun borrarFavorito(movieEntity: MovieEntity) {
         viewModelScope.launch {
             try {
-                listRepository.delete(item) // Usamos el repositorio para eliminar
-                // Actualizar la lista de favoritos
-                _uiState.value = _uiState.value.copy(
-                    favorites = _uiState.value.favorites.filter { it.id != item.id }
-                )
-                // Sincronizar con MovieDao para eliminar en la otra parte
-                movieDao.deleteMovie(item)
+                // Cambiar el estado de la película en la base de datos para marcarla como no favorita
+                val updatedMovie = movieEntity.copy(isFavorite = false)
+
+                // Actualizar la base de datos, pero no eliminar la película
+                listRepository.update(updatedMovie)
+
+
+                // Actualizar la lista de películas favoritas en la UI (ficticiamente eliminada)
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        favorites = currentState.favorites.filter { it.id != movieEntity.id }
+                    )
+                }
             } catch (e: Exception) {
-                // Manejar el error al eliminar
-                _uiState.value = _uiState.value.copy(errorMessageFAV = ErrorMessageFAV.ERROR_DELETING_FAV)
+                _uiState.value = _uiState.value.copy(
+                    errorMessageFAV = ErrorMessageFAV.ERROR_UPDATING_FAV
+                )
             }
         }
     }
@@ -124,13 +131,13 @@ class FavListScrenViewModel(
     fun toggleFavorite(movie: MovieEntity) {
         viewModelScope.launch {
             try {
-                // Cambia el estado de favorito
+                // Cambiar el estado de la película de favorita a no favorita (solo en la base de datos)
                 val updatedMovie = movie.copy(isFavorite = !movie.isFavorite)
 
                 // Actualiza la base de datos
                 listRepository.update(updatedMovie)
 
-                // Recargar la lista de favoritos después de actualizar
+                // Recargar la lista de favoritos para que se refleje el cambio visual
                 recuperarFavoritos()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(

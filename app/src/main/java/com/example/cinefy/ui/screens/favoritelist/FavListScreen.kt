@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
@@ -49,7 +50,7 @@ fun FavListScreenContent(
 ) {
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
-    val favoriteMovies by movieViewModel.favoriteMovies.observeAsState(emptyList())
+    val favoriteMovies by favListViewModel.uiState.collectAsState() // Lista de favoritos desde el ViewModel
 
     if (isExpanded) {
         Column(modifier = modifier.padding(10.dp)) {
@@ -63,14 +64,15 @@ fun FavListScreenContent(
                     bottom = 16.dp
                 )
             ) {
-                items(favoriteMovies) { movie ->
+                items(favoriteMovies.favorites) { movie ->
                     MovieCardWithRemoveButton(
-                        movie,
+                        movie.toMovie(),
                         onClickNavegator = {
                             navController.navigate("details_fav/${movie.title}")
                         },
                         onRemove = { removedMovie ->
-                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity()) // Aquí utilizamos el método borrarFavorito
+                            // Aquí utilizamos el método borrarFavorito
+                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity())
                         }
                     )
                 }
@@ -88,14 +90,15 @@ fun FavListScreenContent(
                     bottom = 16.dp
                 )
             ) {
-                items(favoriteMovies) { movie ->
+                items(favoriteMovies.favorites) { movie ->
                     MovieCardWithRemoveButton(
-                        movie,
+                        movie.toMovie(),
                         onClickNavegator = {
                             navController.navigate("details_fav/${movie.title}")
                         },
                         onRemove = { removedMovie ->
-                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity()) // Aquí utilizamos el método borrarFavorito
+                            // Aquí utilizamos el metodo borrarFavorito
+                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity())
                         }
                     )
                 }
@@ -103,6 +106,7 @@ fun FavListScreenContent(
         }
     }
 }
+
 
 @Composable
 fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit, onClickNavegator: () -> Unit) {
@@ -129,7 +133,7 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit, onClickNa
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text(text = "Confirmación") },
-            text = { Text("¿Estás seguro de que deseas eliminar esta película de tus favoritos?") },
+            text = { Text("¿Estás seguro de que deseas eliminar la pelicula ${movie.title} de tus favoritos?") },
             confirmButton = {
                 TextButton(onClick = {
                     onRemove(movie)
@@ -146,14 +150,6 @@ fun MovieCardWithRemoveButton(movie: Movie, onRemove: (Movie) -> Unit, onClickNa
         )
     }
 }
-
-
-
-
-
-
-
-
 
 @Preview(showBackground = true)
 @Composable
