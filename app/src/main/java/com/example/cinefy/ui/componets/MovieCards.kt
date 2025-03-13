@@ -81,8 +81,13 @@ fun MovieCard(
                         Row {
                             IconButton(
                                 onClick = {
-                                    // Aquí llamamos al toggleFavorite desde el ViewModel
-                                    movieViewModel.toggleFavorite(movie)
+                                    if (isFavorite == false) {
+                                        // Añadir a favoritos
+                                        movieViewModel.toggleFavorite(movie)
+                                        Toast.makeText(context, "Película añadida a favoritos", Toast.LENGTH_SHORT).show()
+                                    } else if (isFavorite == true) {
+                                        Toast.makeText(context, "La película ya está en favoritos", Toast.LENGTH_SHORT).show()
+                                    }
                                 },
                                 modifier = Modifier.size(48.dp),
                                 colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
@@ -95,6 +100,7 @@ fun MovieCard(
                                     tint = MaterialTheme.colorScheme.surface
                                 )
                             }
+
                         }
                     }
                 }

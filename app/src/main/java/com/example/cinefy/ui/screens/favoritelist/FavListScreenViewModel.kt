@@ -1,5 +1,6 @@
 package com.example.cinefy.ui.screens.favoritelist
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,9 +12,11 @@ import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
+import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.localdatabase.MovieDao
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
+import com.example.cinefy.ui.movie.MovieViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,16 +28,22 @@ import kotlinx.coroutines.launch
 class FavListScrenViewModel(
     private val listRepository: FavoriteListRepository,
     private val commentRepository: CommentRepository,
-    private val movieDao: MovieDao // Asegúrate de pasar el DAO
+    private val movieDao: MovieDao,
+    private val movieViewModel: MovieViewModel
 ): ViewModel() {
+
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
+        fun Factory(
+            application: Application,
+            movieViewModel: MovieViewModel
+        ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as MovieReleaseApplication)
+                val app = application as MovieReleaseApplication
                 FavListScrenViewModel(
-                    application.listRepository,
-                    application.commentRepository,
-                    application.moviesDao
+                    app.listRepository,
+                    app.commentRepository,
+                    app.moviesDao,
+                    movieViewModel
                 )
             }
         }

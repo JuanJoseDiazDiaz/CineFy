@@ -15,11 +15,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.componets.MovieCardDetail
@@ -33,10 +35,13 @@ import com.example.cinefy.ui.theme.extendedLight
 @Composable
 fun DetailFavScreen(
     movieTitle: String?, // Recibe el ID de la película desde la navegación
-    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val app = LocalContext.current.applicationContext as MovieReleaseApplication
+    val movieViewModel: MovieViewModel = viewModel(
+        factory = app.viewModelFactory
+    )
     val uiState by movieViewModel.uiState.collectAsState()
     val movie = uiState.movies.find { it.title == movieTitle }
     val isLoading = uiState.isLoading
@@ -79,7 +84,11 @@ fun DetailFavScreen(
 }
 
 @Composable
-fun MovieCardDetailWithFavButton2(movie: Movie, movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory)) {
+fun MovieCardDetailWithFavButton2(movie: Movie) {
+    val app = LocalContext.current.applicationContext as MovieReleaseApplication
+    val movieViewModel: MovieViewModel = viewModel(
+        factory = app.viewModelFactory
+    )
     var isFavorite by remember { mutableStateOf(false) } // Estado del botón de favoritos
 
     LazyColumn(

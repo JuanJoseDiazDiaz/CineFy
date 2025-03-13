@@ -1,5 +1,9 @@
 package com.example.cinefy.ui.movie
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
+import com.example.cinefy.R
 import com.example.cinefy.data.RetrofitInstance
 import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.datamodel.Comment
@@ -31,9 +36,9 @@ import kotlinx.coroutines.withContext
 class MovieViewModel(
     private val userPreferencesRepository: UserPreferencesManager,
     private val movieDao: MovieDao,
-    private val favoriteListRepository: FavoriteListRepository
+    private val favoriteListRepository: FavoriteListRepository,
+    private val context: Context
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
     val favoriteMovies: LiveData<List<Movie>> = movieDao.getFavoriteMovies()
@@ -44,12 +49,19 @@ class MovieViewModel(
     var isRequestInProgress = false
 
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
+        fun Factory(
+            userPreferencesRepository: UserPreferencesManager,
+            movieDao: MovieDao,
+            favoriteListRepository: FavoriteListRepository,
+            context: Context
+        ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = (this[APPLICATION_KEY] as MovieReleaseApplication)
-                val userPreferencesRepository = application.userPreferencesRepository
-                val database = MovieDatabase.getDatabase(application)
-                MovieViewModel(userPreferencesRepository, database.moviesDAO(), application.listRepository)
+                MovieViewModel(
+                    userPreferencesRepository,
+                    movieDao,
+                    favoriteListRepository,
+                    context
+                )
             }
         }
     }
@@ -124,20 +136,19 @@ class MovieViewModel(
     fun toggleFavorite(movie: Movie) {
         viewModelScope.launch {
             try {
-                // Cambiar el estado de la película en la base de datos
-                val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.isFavorite)
-                movieDao.updateMovie(updatedMovieEntity)
+                    // Cambiar el estado de la película en la base de datos
+                    val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.isFavorite)
+                    movieDao.updateMovie(updatedMovieEntity)
 
-                // Actualizar la UI en el ViewModel
-                val updatedMovies = _uiState.value.movies.map { movieItem ->
-                    if (movieItem.id == movie.id) {
-                        movieItem.copy(isFavorite = !movieItem.isFavorite)
-                    } else movieItem
-                }
+                    // Actualizar la UI en el ViewModel
+                    val updatedMovies = _uiState.value.movies.map { movieItem ->
+                        if (movieItem.id == movie.id) {
+                            movieItem.copy(isFavorite = !movieItem.isFavorite)
+                        } else movieItem
+                    }
 
-                // Actualizar el estado con los cambios
-                _uiState.value = _uiState.value.copy(movies = updatedMovies)
-
+                    // Actualizar el estado con los cambios
+                    _uiState.value = _uiState.value.copy(movies = updatedMovies)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(errorMessage = "Error al actualizar favorito: ${e.message}")
             }

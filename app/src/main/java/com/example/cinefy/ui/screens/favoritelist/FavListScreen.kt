@@ -16,12 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.toMovie
@@ -43,11 +45,19 @@ class FavListScreen : ComponentActivity() {
  * */
 @Composable
 fun FavListScreenContent(
-    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
-    favListViewModel: FavListScrenViewModel = viewModel(factory = FavListScrenViewModel.Factory),
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val app = LocalContext.current.applicationContext as MovieReleaseApplication
+
+    // Inicializar MovieViewModel
+    val movieViewModel: MovieViewModel = viewModel(
+        factory = app.viewModelFactory
+    )
+
+    // Inicializar FavListScrenViewModel pasando MovieViewModel como parámetro
+    val favFactory = FavListScrenViewModel.Factory(application = app, movieViewModel = movieViewModel)
+    val favListViewModel: FavListScrenViewModel = viewModel(factory = favFactory)
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
     val favoriteMovies by favListViewModel.uiState.collectAsState() // Lista de favoritos desde el ViewModel

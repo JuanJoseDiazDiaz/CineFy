@@ -12,11 +12,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
 import com.example.cinefy.ui.componets.MovieCard
 import com.example.cinefy.ui.movie.MovieViewModel
@@ -30,9 +32,12 @@ import com.example.cinefy.ui.theme.extendedLight
 fun ElementListScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory), // ViewModel para obtener datos
-    favViewModel: FavListScrenViewModel = viewModel(factory = FavListScrenViewModel.Factory)
+
 ) {
+    val app = LocalContext.current.applicationContext as MovieReleaseApplication
+    val movieViewModel: MovieViewModel = viewModel(
+        factory = app.viewModelFactory
+    )
     val uiState by movieViewModel.uiState.collectAsState()
     val movies = uiState.movies // Lista de películas obtenidas de la API
 

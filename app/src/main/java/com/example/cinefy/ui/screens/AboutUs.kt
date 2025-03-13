@@ -39,7 +39,7 @@ import com.example.cinefy.ui.screens.movieElementList.MedHeaderComp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutUsScreen(
-    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory),
+//    movieViewModel: MovieViewModel = viewModel(factory = MovieViewModel.Factory()),
     modifier: Modifier = Modifier,
     nameApp: String = "Cinefy",
     tematica: String = "Cinematográfica",

@@ -18,10 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.data.DataCinefy.findMovieByTitle
 import com.example.cinefy.data.UserPreferencesManager
@@ -32,8 +34,10 @@ import com.example.cinefy.ui.screens.ContactarCreadorIntent
 
 import com.example.cinefy.ui.screens.profileScreen.ProfileScreenContent
 import com.example.cinefy.ui.componets.BottomNavigationBar
+import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.DetailFavScreen
 import com.example.cinefy.ui.screens.DetailItemScreen
+import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 import com.example.cinefy.ui.screens.movieElementList.ElementListScreen
 import com.example.cinefy.utils.getWindowSizeClass
 import com.example.cinefy.ui.theme.CinefyTheme
@@ -45,12 +49,23 @@ val Context.dataStore by preferencesDataStore(name = UserPreferencesManager.SETT
 class MainActivity : ComponentActivity() {
     lateinit var userPreferencesRepository: UserPreferencesManager
     lateinit var movieRepository: MovieRepository
+    private lateinit var movieViewModel: MovieViewModel
+    private lateinit var favListScrenViewModel: FavListScrenViewModel
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Inicialización del MovieViewModel usando la fábrica de la aplicación
+        val app = application as MovieReleaseApplication
+        movieViewModel = ViewModelProvider(this, app.viewModelFactory).get(MovieViewModel::class.java)
+
+        // Pasar el movieViewModel al ViewModelFactory de FavListScrenViewModel
+        val favFactory = FavListScrenViewModel.Factory(application = app, movieViewModel = movieViewModel)
+
+        // Inicialización del FavListScrenViewModel
+        favListScrenViewModel = ViewModelProvider(this, favFactory).get(FavListScrenViewModel::class.java)
         //Creación de la instancia del repositorio de preferencias de usuario
         userPreferencesRepository = UserPreferencesManager(dataStore)
 
