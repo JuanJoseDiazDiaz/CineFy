@@ -136,19 +136,18 @@ class MovieViewModel(
     fun toggleFavorite(movie: Movie) {
         viewModelScope.launch {
             try {
-                    // Cambiar el estado de la película en la base de datos
-                    val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.isFavorite)
-                    movieDao.updateMovie(updatedMovieEntity)
+                // Crear una versión actualizada de la película
+                val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.isFavorite)
+                movieDao.updateMovie(updatedMovieEntity)
 
-                    // Actualizar la UI en el ViewModel
-                    val updatedMovies = _uiState.value.movies.map { movieItem ->
+                // Actualizar la lista de películas en el estado UI
+                _uiState.value = _uiState.value.copy(
+                    movies = _uiState.value.movies.map { movieItem ->
                         if (movieItem.id == movie.id) {
                             movieItem.copy(isFavorite = !movieItem.isFavorite)
                         } else movieItem
                     }
-
-                    // Actualizar el estado con los cambios
-                    _uiState.value = _uiState.value.copy(movies = updatedMovies)
+                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(errorMessage = "Error al actualizar favorito: ${e.message}")
             }

@@ -46,31 +46,23 @@ import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 fun MovieCard(
     movie: Movie,
     onClick: () -> Unit,
-    movieViewModel: MovieViewModel // Usamos el MovieViewModel para actualizar el estado
+    movieViewModel: MovieViewModel, // Usamos el MovieViewModel para actualizar el estado
 ) {
     val context = LocalContext.current
     val alreadyFavorite = stringResource(R.string.already)
     val addedToFavorite = stringResource(R.string.addfavorite)
 
-    // Obtenemos el estado de los favoritos desde el MovieViewModel
-    val uiState by movieViewModel.uiState.collectAsState()
-
-    // Comprobamos si la película está marcada como favorita
-    val isFavorite = movie.isFavorite
+    val isFavorite = movie.isFavorite // Asegúrate de que el estado de favorito se pase correctamente
 
     Row {
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .clickable { onClick() }, // Al hacer clic se navega a los detalles de la película
+                .clickable { onClick() },
             shape = MaterialTheme.shapes.medium,
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+            Row(horizontalArrangement = Arrangement.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     AsyncImage(
                         model = movie.imageUrl,
                         contentDescription = "Movie Poster",
@@ -81,26 +73,33 @@ fun MovieCard(
                         Row {
                             IconButton(
                                 onClick = {
-                                    if (isFavorite == false) {
-                                        // Añadir a favoritos
-                                        movieViewModel.toggleFavorite(movie)
-                                        Toast.makeText(context, "Película añadida a favoritos", Toast.LENGTH_SHORT).show()
-                                    } else if (isFavorite == true) {
-                                        Toast.makeText(context, "La película ya está en favoritos", Toast.LENGTH_SHORT).show()
+                                    movieViewModel.toggleFavorite(movie)
+                                    val message = if (isFavorite) {
+                                        "Película eliminada de favoritos"
+                                    } else {
+                                        "Película añadida a favoritos"
                                     }
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()// Actualiza en el ViewModel
                                 },
                                 modifier = Modifier.size(48.dp),
                                 colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
                             ) {
-                                // Cambia el icono dependiendo de si la película está en favoritos o no
-                                Icon(
-                                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                    modifier = Modifier.size(48.dp),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.surface
-                                )
+                                if (!isFavorite){
+                                    Icon(
+                                        imageVector = Icons.Default.FavoriteBorder,
+                                        modifier = Modifier.size(48.dp),
+                                        contentDescription = null,
+                                        tint = Color.Gray
+                                    )
+                                }else{
+                                    Icon(
+                                        imageVector = Icons.Default.Favorite ,
+                                        modifier = Modifier.size(48.dp),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
-
                         }
                     }
                 }
