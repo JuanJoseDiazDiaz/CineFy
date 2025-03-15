@@ -149,6 +149,7 @@ class MainActivity : ComponentActivity() {
                             DetailItemScreen(
                                 movieTitle = movieTitle,
                                 modifier = Modifier.padding(innerPadding),
+                                comentarioViewModel = movieViewModel,
                                 navController = navController
                             )
                         }
@@ -158,6 +159,7 @@ class MainActivity : ComponentActivity() {
                             DetailFavScreen(
                                 movieTitle = movieTitle,
                                 navController = navController,
+                                comentarioViewModel = movieViewModel,
                                 modifier = Modifier.padding(innerPadding),
                             )
                         }

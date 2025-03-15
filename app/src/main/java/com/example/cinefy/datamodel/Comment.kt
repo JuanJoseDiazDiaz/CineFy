@@ -10,6 +10,8 @@ data class Comment(
     val id: Int = 0,
     @ColumnInfo("userName")
     val author: String,
+    @ColumnInfo(name = "NombreFavo")
+    val favoriteName: String?,
     @ColumnInfo("commentText")
     val content: String
 )

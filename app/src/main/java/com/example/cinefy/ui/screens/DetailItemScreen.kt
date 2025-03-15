@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
+import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.componets.MovieCardDetail
 import com.example.cinefy.ui.movie.MovieViewModel
@@ -27,8 +28,10 @@ import com.example.cinefy.ui.screens.movieElementList.MedHeaderCompDetail
 fun DetailItemScreen(
     movieTitle: String?, // Recibe el ID de la película desde la navegación
     navController: NavController,
+    comentarioViewModel: MovieViewModel,
     modifier: Modifier = Modifier
 ) {
+    val comentarios by comentarioViewModel.comentarios.collectAsState()
     val app = LocalContext.current.applicationContext as MovieReleaseApplication
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
@@ -44,7 +47,18 @@ fun DetailItemScreen(
     LaunchedEffect(Unit) {
         movieViewModel.getMovies()
     }
-
+    // Función para agregar comentario
+    fun onAddComment(comment: String) {
+        if (comment.isNotBlank() && movie != null) {
+            val comentario = Comment(
+                author = "juan", // Poner nombre de usuario predeterminado
+                favoriteName = movie.title,
+                content = comment
+            )
+            comentarioViewModel.insertarComentario(comentario)
+            comentarioViewModel.obtenerComentariosPorFavorito(movie.title)
+        }
+    }
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -63,7 +77,7 @@ fun DetailItemScreen(
                 }
             }
             movie != null -> {
-                MovieCardDetailWithFavButton(movie)
+                MovieCardDetailWithFavButton(movie, onAddComment = {comment -> onAddComment(comment)}, comentarios)
             }
             else -> {
                 Text(text = stringResource(R.string.movie_not_found), style = MaterialTheme.typography.bodyLarge)
@@ -73,7 +87,7 @@ fun DetailItemScreen(
 }
 
 @Composable
-fun MovieCardDetailWithFavButton(movie: Movie) {
+fun MovieCardDetailWithFavButton(movie: Movie, onAddComment: (String) -> Unit, comments: List<Comment>) {
     val app = LocalContext.current.applicationContext as MovieReleaseApplication
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
@@ -84,17 +98,11 @@ fun MovieCardDetailWithFavButton(movie: Movie) {
         modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item { MovieCardDetail(movie, movieViewModel) }
+        item { MovieCardDetail(movie,movieViewModel, onAddComment, comments) }
         item { Spacer(modifier = Modifier.height(8.dp)) }
-        item {
-            Button(onClick = { isFavorite = !isFavorite }) {
-                Text(
-                    text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(R.string.AddFav)
-                )
-            }
-        }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

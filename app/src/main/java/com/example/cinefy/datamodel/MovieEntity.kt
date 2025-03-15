@@ -3,8 +3,11 @@ package com.example.cinefy.datamodel
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.cinefy.localdatabase.Converters
 
 @Entity(tableName = "movies")
+@TypeConverters(Converters::class)
 data class MovieEntity(
     @PrimaryKey
     val rank: Int,

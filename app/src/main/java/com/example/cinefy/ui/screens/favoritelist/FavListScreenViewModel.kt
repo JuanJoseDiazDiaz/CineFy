@@ -127,15 +127,16 @@ class FavListScrenViewModel(
             try {
                 val newComment = Comment(
                     author = userName,
+                    favoriteName = favoriteName,
                     content = commentText
                 )
-                commentRepository.insertComment(newComment)
+                commentRepository.insertarComentario(newComment)
             } catch (e: Exception) {
             }
         }
     }
-    fun getCommentsForFavorite(favoriteName: String): Flow<List<Comment>> {
-        return commentRepository.getCommentsByFavoriteId(favoriteName)
+    suspend fun getCommentsForFavorite(favoriteName: String): List<Comment> {
+        return commentRepository.obtenerComentariosPorFavorito(favoriteName)
     }
     fun toggleFavorite(movie: MovieEntity) {
         viewModelScope.launch {

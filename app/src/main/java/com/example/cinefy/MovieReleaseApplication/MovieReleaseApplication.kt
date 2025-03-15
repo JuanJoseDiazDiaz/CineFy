@@ -31,7 +31,7 @@ class MovieReleaseApplication : Application() {
         moviesDao = database.moviesDAO()
         // Crear la fábrica del ViewModel
         viewModelFactory = MovieViewModel.Factory(
-            userPreferencesRepository, moviesDao, listRepository, applicationContext
+            userPreferencesRepository, moviesDao, listRepository, applicationContext, commentRepository
         )
     }
 

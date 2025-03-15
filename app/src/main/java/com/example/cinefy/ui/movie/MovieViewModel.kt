@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -24,6 +25,7 @@ import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
 import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.datamodel.toMovieEntity
+import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,8 +39,11 @@ class MovieViewModel(
     private val userPreferencesRepository: UserPreferencesManager,
     private val movieDao: MovieDao,
     private val favoriteListRepository: FavoriteListRepository,
-    private val context: Context
+    private val context: Context,
+    private val comentarioRepository: CommentRepository
 ) : ViewModel() {
+    private val _comentarios = MutableStateFlow<List<Comment>>(emptyList())
+    val comentarios: StateFlow<List<Comment>> get() = _comentarios.asStateFlow()
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
     val favoriteMovies: LiveData<List<Movie>> = movieDao.getFavoriteMovies()
@@ -53,14 +58,16 @@ class MovieViewModel(
             userPreferencesRepository: UserPreferencesManager,
             movieDao: MovieDao,
             favoriteListRepository: FavoriteListRepository,
-            context: Context
+            context: Context,
+            comentarioRepository: CommentRepository
         ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 MovieViewModel(
                     userPreferencesRepository,
                     movieDao,
                     favoriteListRepository,
-                    context
+                    context,
+                    comentarioRepository
                 )
             }
         }
@@ -101,30 +108,26 @@ class MovieViewModel(
         }
     }
 
-    fun addComment(movieTitle: String, comment: Comment) {
+    fun obtenerComentariosPorFavorito(favoriteName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val nuevosComentarios = comentarioRepository.obtenerComentariosPorFavorito(favoriteName)
+            _comentarios.value = nuevosComentarios
+        }
+    }
+
+    fun insertarComentario(comentario: Comment) {
         viewModelScope.launch {
-            try {
-                val movie = withContext(Dispatchers.IO) { movieDao.getMovieByTitle(movieTitle) }
-                movie?.let {
-                    val updatedComments = it.comments.toMutableList().apply { add(comment) }.toList()
-
-                    withContext(Dispatchers.IO) {
-                        movieDao.updateComments(movieTitle, updatedComments)
-                    }
-
-                    val updatedMovies = _uiState.value.movies.map { movieItem ->
-                        if (movieItem.title == movieTitle) {
-                            val movieEntity = movieDao.getMovieByTitle(movieTitle)
-                            movieEntity?.copy(comments = updatedComments)?.toMovie() ?: movieItem
-                        } else movieItem
-                    }
-                    _uiState.value = _uiState.value.copy(movies = updatedMovies)
-                }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessage = "Error al agregar comentario: ${e.message}")
+            comentarioRepository.insertarComentario(comentario)
+            // Asegurarse de que `favoriteName` no sea nulo antes de llamarlo
+            comentario.favoriteName?.let {
+                obtenerComentariosPorFavorito(it)
+            } ?: run {
+                // Manejar el caso cuando `favoriteName` es nulo
+                // Podrías mostrar un mensaje de error o tomar alguna otra acción
             }
         }
     }
+
 
     // Agregar esta función para sincronizar los favoritos
     fun updateFavorites(movie: MovieEntity) {

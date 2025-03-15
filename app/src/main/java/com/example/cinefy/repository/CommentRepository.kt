@@ -7,11 +7,18 @@ import kotlinx.coroutines.flow.Flow
 
 class CommentRepository(private val commentDAO: CommentDAO) {
 
-    suspend fun insertComment(comment: Comment) {
-        commentDAO.insertComment(comment)
+    // Insertar un nuevo comentario
+    suspend fun insertarComentario(comentario: Comment) {
+        commentDAO.insertComment(comentario)
     }
 
-    fun getCommentsByFavoriteId(favoriteName: String): Flow<List<Comment>> {
-        return commentDAO.getCommentsByFavoriteName(favoriteName)
+    // Obtener todos los comentarios de un personaje favorito
+    suspend fun obtenerComentariosPorFavorito(favoriteName: String): List<Comment> {
+        return commentDAO.obtenerComentariosPorFavorito(favoriteName)
+    }
+
+    // Obtener todos los comentarios
+    suspend fun obtenerTodosComentarios(): List<Comment> {
+        return commentDAO.obtenerTodosComentarios()
     }
 }

@@ -15,7 +15,7 @@ data class Movie(
     @SerializedName("year") val year: Int,
     @SerializedName("imdbid") val imdbId: String,
     @SerializedName("imdb_link") val imdbLink: String,
-    @Transient val isFavorite: Boolean = false // Añadir el campo isFavorite
+    @Transient val isFavorite: Boolean = false,
 )
 
 

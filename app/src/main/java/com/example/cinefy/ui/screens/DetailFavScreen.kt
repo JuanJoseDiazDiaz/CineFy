@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -23,7 +24,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
+import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.ui.componets.MovieCardDetail
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.movieElementList.MedHeaderCompDetail
@@ -36,8 +39,10 @@ import com.example.cinefy.ui.theme.extendedLight
 fun DetailFavScreen(
     movieTitle: String?, // Recibe el ID de la película desde la navegación
     navController: NavController,
+    comentarioViewModel: MovieViewModel,
     modifier: Modifier = Modifier
 ) {
+    val comentarios by comentarioViewModel.comentarios.collectAsState()
     val app = LocalContext.current.applicationContext as MovieReleaseApplication
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
@@ -50,8 +55,22 @@ fun DetailFavScreen(
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
 
-    LaunchedEffect(Unit) {
-        movieViewModel.getMovies()
+    LaunchedEffect(movie) {
+        movie?.let {
+            comentarioViewModel.obtenerComentariosPorFavorito(it.title)
+        }
+    }
+    // Función para agregar comentario
+    fun onAddComment(comment: String) {
+        if (comment.isNotBlank() && movie != null) {
+            val comentario = Comment(
+                author = "juan", // Poner nombre de usuario predeterminado
+                favoriteName = movie.title,
+                content = comment
+            )
+            comentarioViewModel.insertarComentario(comentario)
+            comentarioViewModel.obtenerComentariosPorFavorito(movie.title)
+        }
     }
 
     Column(
@@ -74,7 +93,11 @@ fun DetailFavScreen(
                 }
             }
             movie != null -> {
-                MovieCardDetailWithFavButton2(movie)
+                MovieCardDetailWithFavButton2(
+                    movie = movie,
+                    onAddComment = { comment -> onAddComment(comment) },
+                    comments = comentarios,
+                )
             }
             else -> {
                 Text(text = stringResource(R.string.movie_not_found), style = MaterialTheme.typography.bodyLarge)
@@ -84,7 +107,7 @@ fun DetailFavScreen(
 }
 
 @Composable
-fun MovieCardDetailWithFavButton2(movie: Movie) {
+fun MovieCardDetailWithFavButton2(movie: Movie, onAddComment: (String) -> Unit, comments: List<Comment>) {
     val app = LocalContext.current.applicationContext as MovieReleaseApplication
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
@@ -97,98 +120,80 @@ fun MovieCardDetailWithFavButton2(movie: Movie) {
     ) {
         // Mostrar la tarjeta de detalles de la película
         item {
-            MovieCardDetail(movie, movieViewModel)
+            MovieCardDetail(movie, movieViewModel, onAddComment, comments)
         }
 
-        // Espacio entre la tarjeta y el siguiente contenido
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+//        // Espacio entre el texto y la lista de elementos
+//        item {
+//            Spacer(modifier = Modifier.height(10.dp))
+//            Row {
+//                Text(
+//                    stringResource(R.string.Comentarios),
+//                    style = MaterialTheme.typography.headlineMedium,
+//                )
+//                Spacer(modifier = Modifier.width(5.dp))
+//                FloatingActionButton(
+//                    onClick = { /* Acción al hacer clic en el FAB */ },
+//                    modifier = Modifier.size(48.dp), // Ajusta el tamaño del FAB
+//                    containerColor = MaterialTheme.colorScheme.primary // Color del botón
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.AddCircle, // Ícono del FAB
+//                        contentDescription = null,
+//                        tint = MaterialTheme.colorScheme.onPrimary // Color del ícono
+//                    )
+//                }
+//            }
+//        }
+//
+//        // LazyColumn interna para mostrar una lista de elementos (por ejemplo, comentarios)
+//        items(1) { index ->
+//            // Reemplaza este contenido con datos reales de comentarios
+//            Row {
+//                Icon(
+//                    imageVector = Icons.TwoTone.AccountCircle,
+//                    modifier = Modifier.size(48.dp),
+//                    contentDescription = stringResource(R.string.more_content_desc),
+//                    tint = MaterialTheme.colorScheme.primary
+//                )
+//                Text(
+//                    text = "hhhh",
+//                    modifier = Modifier.padding(8.dp)
+//                )
+//            }
+//        }// LazyColumn interna para mostrar una lista de elementos (por ejemplo, comentarios)
+//        items(1) { index ->
+//            // Reemplaza este contenido con datos reales de comentarios
+//            Row {
+//                Icon(
+//                    imageVector = Icons.TwoTone.AccountCircle,
+//                    modifier = Modifier.size(48.dp),
+//                    contentDescription = stringResource(R.string.more_content_desc),
+//                    tint = MaterialTheme.colorScheme.primary
+//                )
+//                Text(
+//                    text = "hhhh",
+//                    modifier = Modifier.padding(8.dp)
+//                )
+//            }
+//        }// LazyColumn interna para mostrar una lista de elementos (por ejemplo, comentarios)
+//        items(1) { index ->
+//            // Reemplaza este contenido con datos reales de comentarios
+//            Row {
+//                Icon(
+//                    imageVector = Icons.TwoTone.AccountCircle,
+//                    modifier = Modifier.size(48.dp),
+//                    contentDescription = stringResource(R.string.more_content_desc),
+//                    tint = MaterialTheme.colorScheme.primary
+//                )
+//                Text(
+//                    text = "hhhh",
+//                    modifier = Modifier.padding(8.dp)
+//                )
+//            }
+//        }
 
-        // Botón de favoritos
-        item {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Button(onClick = {
-                    isFavorite = !isFavorite
-                }) {
-                    Text(
-                        text = if (isFavorite) stringResource(R.string.AddConfirm) else stringResource(R.string.AddFav)
-                    )
-                }
-            }
-        }
 
-        // Espacio entre el texto y la lista de elementos
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Row {
-                Text(
-                    stringResource(R.string.Comentarios),
-                    style = MaterialTheme.typography.headlineMedium,
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                FloatingActionButton(
-                    onClick = { /* Acción al hacer clic en el FAB */ },
-                    modifier = Modifier.size(48.dp), // Ajusta el tamaño del FAB
-                    containerColor = MaterialTheme.colorScheme.primary // Color del botón
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AddCircle, // Ícono del FAB
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary // Color del ícono
-                    )
-                }
-            }
-        }
-
-        // LazyColumn interna para mostrar una lista de elementos (por ejemplo, comentarios)
-        items(1) { index ->
-            // Reemplaza este contenido con datos reales de comentarios
-            Row {
-                Icon(
-                    imageVector = Icons.TwoTone.AccountCircle,
-                    modifier = Modifier.size(48.dp),
-                    contentDescription = stringResource(R.string.more_content_desc),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Magnífica dirección y actuación en una historia conmovedora.",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
-
-        items(1) { index ->
-            // Otro comentario ficticio
-            Row {
-                Icon(
-                    imageVector = Icons.TwoTone.AccountCircle,
-                    modifier = Modifier.size(48.dp),
-                    contentDescription = stringResource(R.string.more_content_desc),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Una película impactante y profunda sobre la ciencia y la moral.",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
-
-        items(1) { index ->
-            // Otro comentario ficticio
-            Row {
-                Icon(
-                    imageVector = Icons.TwoTone.AccountCircle,
-                    modifier = Modifier.size(48.dp),
-                    contentDescription = stringResource(R.string.more_content_desc),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Un retrato fascinante de Oppenheimer y su dilema ético.",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
     }
 }
 

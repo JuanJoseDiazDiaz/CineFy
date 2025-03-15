@@ -9,10 +9,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CommentDAO {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert
     suspend fun insertComment(comment: Comment)
 
 
-    @Query("SELECT * FROM comments WHERE userName = :userName")
-    fun getCommentsByFavoriteName(userName: String): Flow<List<Comment>>
+    // Obtener todos los comentarios de un personaje específico
+    @Query("SELECT * FROM comments WHERE NombreFavo = :favoriteName")
+    suspend fun obtenerComentariosPorFavorito(favoriteName: String): List<Comment>
+
+    // Obtener todos los comentarios
+    @Query("SELECT * FROM comments")
+    suspend fun obtenerTodosComentarios(): List<Comment>
 }
