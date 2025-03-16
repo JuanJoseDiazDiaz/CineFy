@@ -38,7 +38,8 @@ data class MovieEntity(
     val isFavorite: Boolean = false,
     val comments: List<Comment> = emptyList()// Lista de comentarios
 )
-fun Movie.toMovieEntity(isFavorite: Boolean = false): MovieEntity {
+
+fun Movie.toMovieEntity(): MovieEntity {
     return MovieEntity(
         rank = this.rank,
         title = this.title,
@@ -52,7 +53,6 @@ fun Movie.toMovieEntity(isFavorite: Boolean = false): MovieEntity {
         year = this.year,
         imdbId = this.imdbId,
         imdbLink = this.imdbLink,
-        isFavorite = isFavorite,
         comments = emptyList() // Añadir comentarios
     )
 }

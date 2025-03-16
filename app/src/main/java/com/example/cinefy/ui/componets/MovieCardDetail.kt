@@ -39,7 +39,7 @@ import coil.compose.AsyncImage
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
-import com.example.cinefy.datamodel.toMovieEntity
+//import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.profileScreen.ProfileUiState
 

@@ -27,8 +27,9 @@ import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.data.DataCinefy.findMovieByTitle
 import com.example.cinefy.data.UserPreferencesManager
+import com.example.cinefy.datamodel.MovieEntity
 import com.example.cinefy.repository.MovieRepository
-import com.example.cinefy.datamodel.Movie
+//import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.screens.AboutUsScreen
 import com.example.cinefy.ui.screens.ContactarCreadorIntent
 
@@ -81,7 +82,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        val exampleMovie = Movie(
+        val exampleMovie = MovieEntity(
             rank = 32,
             title = "OppenHeimer",
             description = "The story of American scientist, J. Robert Oppenheimer, " +
@@ -114,7 +115,7 @@ class MainActivity : ComponentActivity() {
                         composable("movie_list") {
                             ElementListScreen(
                                 modifier = Modifier.padding(innerPadding),
-                                navController = navController
+                                navController = navController,
                             )
                         }
                         composable("lista_Fav") {

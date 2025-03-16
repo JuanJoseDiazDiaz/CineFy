@@ -9,7 +9,6 @@ data class MovieUiState(
     val moviesEntitys: List<MovieEntity> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val isFavorite : Boolean = false,
 )
 enum class UserMessage {
     ERROR_ACCESSING_DATASTORE,

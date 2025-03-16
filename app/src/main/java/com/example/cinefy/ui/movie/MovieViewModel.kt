@@ -1,6 +1,7 @@
 package com.example.cinefy.ui.movie
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -27,14 +28,17 @@ import com.example.cinefy.datamodel.MovieEntity
 import com.example.cinefy.datamodel.SingIn
 import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.datamodel.toMovieEntity
+//import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
 import com.example.cinefy.repository.UserRepository
+import com.example.cinefy.ui.screens.favoritelist.ErrorMessageFAV
 import com.example.cinefy.ui.screens.profileScreen.ProfileUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,6 +53,7 @@ class MovieViewModel(
 ) : ViewModel() {
     private val _comentarios = MutableStateFlow<List<Comment>>(emptyList())
     val comentarios: StateFlow<List<Comment>> get() = _comentarios.asStateFlow()
+
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
 
@@ -87,6 +92,7 @@ class MovieViewModel(
 
     init {
         getMovies()
+
     }
 
     fun getMovies() {
@@ -96,11 +102,13 @@ class MovieViewModel(
                 withContext(Dispatchers.IO) {
                     val localMovies = movieDao.getAllMovies().map { it.toMovie() }
                     if (localMovies.isNotEmpty()) {
+                        Log.d("Movies", "$localMovies")
                         withContext(Dispatchers.Main) {
                             _uiState.value = _uiState.value.copy(movies = localMovies, isLoading = false)
                         }
                     } else {
                         val movies = repository.getMovies()
+                        Log.d("Movies", "$movies")
                         val movieEntities = movies.map { it.toMovieEntity() }
                         movieDao.insertMovies(movieEntities)
 
@@ -153,16 +161,16 @@ class MovieViewModel(
         }
     }
 
-     fun toggleFavorite(movie: Movie) {
+     fun toggleFavorite(movieEntity: MovieEntity) {
         viewModelScope.launch {
             try {
-                val movieEntity = movie.toMovieEntity()
-
+//                val movieEntity = movie.toMovieEntity()
                 // Verifica si la película ya está en la base de datos
                 val existingMovie = movieDao.getMovieByTitle(movieEntity.title)
                 if (existingMovie != null) {
                     // Si existe, actualiza solo el campo `isFavorite`
                     movieDao.updateMovie(movieEntity.copy(isFavorite = !movieEntity.isFavorite))
+
                 } else {
                     // Si no existe, insertala
                     movieDao.insert(movieEntity)
@@ -172,7 +180,7 @@ class MovieViewModel(
                 _uiState.value = _uiState.value.copy(
                     movies = _uiState.value.movies.map { movieItem ->
                         if (movieItem.id == movieEntity.id) {
-                            movieItem.copy(isFavorite = !movieItem.isFavorite)
+                            movieItem.copy()
                         } else movieItem
                     }
                 )
@@ -181,7 +189,6 @@ class MovieViewModel(
             }
         }
     }
-
 
     // Eliminar película de favoritos y sincronizar con el repositorio
     fun removeMovie(movie: MovieEntity) {

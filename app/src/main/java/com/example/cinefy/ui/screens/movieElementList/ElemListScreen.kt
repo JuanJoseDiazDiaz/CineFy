@@ -1,5 +1,6 @@
 package com.example.cinefy.ui.screens.movieElementList
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
+import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.componets.MovieCard
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
@@ -32,7 +34,6 @@ import com.example.cinefy.ui.theme.extendedLight
 fun ElementListScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-
 ) {
     val app = LocalContext.current.applicationContext as MovieReleaseApplication
     val movieViewModel: MovieViewModel = viewModel(
@@ -50,6 +51,7 @@ fun ElementListScreen(
     LaunchedEffect(Unit) {
         if (movies.isEmpty()) {
             movieViewModel.getMovies()
+
         }
     }
 
@@ -80,7 +82,7 @@ fun ElementListScreen(
                 ) {
                     if (filteredMovies.isNotEmpty()) {
                         items(filteredMovies) { movie ->
-                            MovieCard(movie = movie, onClick = {
+                            MovieCard(movie = movie.toMovieEntity(), onClick = {
                                 navController.navigate("details_fav/${movie.title}")
                             }, movieViewModel)
                         }

@@ -51,12 +51,13 @@ class FavListScrenViewModel(
     }
     private val _uiState = MutableStateFlow(FavListScreenUiState())
     val uiState: StateFlow<FavListScreenUiState> = _uiState.asStateFlow()
+
     init {
         recuperarFavoritos()
     }
 
     // Recuperar los favoritos de la base de datos
-    private fun recuperarFavoritos() {
+    fun recuperarFavoritos() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
@@ -89,7 +90,7 @@ class FavListScrenViewModel(
                 listRepository.update(updatedMovie)
 
 
-                // Actualizar la lista de películas favoritas en la UI (ficticiamente eliminada)
+                // Actualizar la lista de películas favoritas en la UI
                 _uiState.update { currentState ->
                     currentState.copy(
                         favorites = currentState.favorites.filter { it.id != movieEntity.id }

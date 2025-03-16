@@ -118,7 +118,6 @@ fun MovieCardDetailWithFavButton2(movie: Movie, onAddComment: (String) -> Unit, 
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
     )
-    var isFavorite by remember { mutableStateOf(false) } // Estado del botón de favoritos
 
     LazyColumn(
         modifier = Modifier.padding(10.dp),

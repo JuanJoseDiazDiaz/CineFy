@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,20 +40,27 @@ import com.example.cinefy.R
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
 import com.example.cinefy.datamodel.toMovieEntity
+//import com.example.cinefy.datamodel.toMovie
+//import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
 import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 
 @Composable
 fun MovieCard(
-    movie: Movie,
+    movie: MovieEntity,
     onClick: () -> Unit,
-    movieViewModel: MovieViewModel, // Usamos el MovieViewModel para actualizar el estado
+    movieViewModel: MovieViewModel,
 ) {
     val context = LocalContext.current
     val alreadyFavorite = stringResource(R.string.already)
     val addedToFavorite = stringResource(R.string.addfavorite)
 
-    val isFavorite = movie.isFavorite // Asegúrate de que el estado de favorito se pase correctamente
+    // 🔹 Aquí usamos remember para que la UI detecte cambios en la película
+    val isFavorite by remember { mutableStateOf(movie.isFavorite) }
+
+    LaunchedEffect(movie.isFavorite) {
+        // Fuerza la recomposición cuando isFavorite cambia
+    }
 
     Row {
         Card(
@@ -73,31 +81,34 @@ fun MovieCard(
                         Row {
                             IconButton(
                                 onClick = {
-                                    movieViewModel.toggleFavorite(movie)
-                                    val message = if (isFavorite) {
-                                        "Película eliminada de favoritos"
-                                    } else {
-                                        "Película añadida a favoritos"
-
+                                    if (!isFavorite) {
+                                        movieViewModel.toggleFavorite(movie)
+//                                        favListScrenViewModel.recuperarFavoritos()
+                                        Toast.makeText(
+                                            context,
+                                            "Película añadida a favoritos",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
-                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()// Actualiza en el ViewModel
                                 },
                                 modifier = Modifier.size(48.dp),
                                 colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
                             ) {
-                                if (!isFavorite){
+                                if (isFavorite){
+                                    Log.d("Favorite", "Esta a true")
                                     Icon(
-                                        imageVector = Icons.Default.FavoriteBorder,
+                                        imageVector =  Icons.Default.Favorite,
+                                    modifier = Modifier.size(48.dp),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }else{
+                                    Log.d("Favorite", "Esta a false")
+                                    Icon(
+                                        imageVector =  Icons.Default.FavoriteBorder,
                                         modifier = Modifier.size(48.dp),
                                         contentDescription = null,
                                         tint = Color.Gray
-                                    )
-                                }else{
-                                    Icon(
-                                        imageVector = Icons.Default.Favorite ,
-                                        modifier = Modifier.size(48.dp),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
                                     )
                                 }
                             }
@@ -108,6 +119,7 @@ fun MovieCard(
         }
     }
 }
+
 
 
 
