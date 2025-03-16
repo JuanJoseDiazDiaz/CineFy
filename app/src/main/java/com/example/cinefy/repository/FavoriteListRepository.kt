@@ -6,7 +6,7 @@ import com.example.cinefy.localdatabase.MovieDao
 import kotlinx.coroutines.flow.Flow
 
 class FavoriteListRepository(
-    private val listDAO: MovieDao
+    private val listDAO: MovieDao,
 ): ListInterface {
 
     override suspend fun insert(movie: MovieEntity) = listDAO.insert(movie)

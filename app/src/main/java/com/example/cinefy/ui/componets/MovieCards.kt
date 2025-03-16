@@ -78,6 +78,7 @@ fun MovieCard(
                                         "Película eliminada de favoritos"
                                     } else {
                                         "Película añadida a favoritos"
+
                                     }
                                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()// Actualiza en el ViewModel
                                 },

@@ -90,6 +90,25 @@ fun ProfileScreenContent(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Selector de tema
+            Text(text = "Seleccionar tema:")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = {
+                    coroutineScope.launch { userPreferences.saveTheme("ligth") }
+                }) { Text("Claro") }
+
+                Button(onClick = {
+                    coroutineScope.launch { userPreferences.saveTheme("dark") }
+                }) { Text("Oscuro") }
+
+                Button(onClick = {
+                    coroutineScope.launch { userPreferences.saveTheme("System") }
+                }) { Text("Sistema") }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             errorMessage?.let {
                 Text(text = it, color = Color.Red, modifier = Modifier.padding(8.dp))
             }

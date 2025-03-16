@@ -27,7 +27,9 @@ class MovieReleaseApplication : Application() {
         super.onCreate()
 //Creación de la instancia del repositorio de preferencias de usuario
         userPreferencesRepository = UserPreferencesManager(dataStore)
-        listRepository = FavoriteListRepository(MovieDatabase.getDatabase(this).moviesDAO())
+        listRepository = FavoriteListRepository(
+            MovieDatabase.getDatabase(this).moviesDAO(),
+        )
         commentRepository = CommentRepository(MovieDatabase.getDatabase(this).commentsDAO())
         userRepository = UserRepository(MovieDatabase.getDatabase(this).userDAO())
         val database = MovieDatabase.getDatabase(this)

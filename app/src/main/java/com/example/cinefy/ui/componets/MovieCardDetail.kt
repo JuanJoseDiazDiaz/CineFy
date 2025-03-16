@@ -41,12 +41,13 @@ import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.profileScreen.ProfileUiState
 
 @Composable
 fun MovieCardDetail(movie: Movie, movieViewModel: MovieViewModel, onAddComment: (String) -> Unit, commentsList: List<Comment>) {
     var showCommentField by remember { mutableStateOf(false) }
     var commentText by remember { mutableStateOf("") }
-
+    val uiStateProfile = movieViewModel.uiStateProfile
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AsyncImage(
             model = movie.imageUrl, // Asume que movie.imageUrl es una URL

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.cinefy.localdatabase.Converters
 
-@Entity(tableName = "movies")
+@Entity(tableName = "movies_favorites")
 @TypeConverters(Converters::class)
 data class MovieEntity(
     @PrimaryKey

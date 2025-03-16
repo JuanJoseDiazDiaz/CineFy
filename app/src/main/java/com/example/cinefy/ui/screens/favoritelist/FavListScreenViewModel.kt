@@ -12,6 +12,7 @@ import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
+import com.example.cinefy.datamodel.SingIn
 import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.localdatabase.MovieDao
 import com.example.cinefy.repository.CommentRepository
@@ -102,18 +103,7 @@ class FavListScrenViewModel(
         }
     }
 
-    fun insertarFavorito(item: MovieEntity) {
-        viewModelScope.launch {
-            try {
-                listRepository.insert(item)
-                _uiState.value = _uiState.value.copy(
-                    favorites = _uiState.value.favorites + item // Agregar a la lista de favoritos
-                )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessageFAV = ErrorMessageFAV.ERROR_INSERTING_FAV)
-            }
-        }
-    }
+
 
 
 

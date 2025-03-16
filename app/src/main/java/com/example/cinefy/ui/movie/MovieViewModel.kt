@@ -146,7 +146,6 @@ class MovieViewModel(
         }
     }
 
-
     // Agregar esta función para sincronizar los favoritos
     fun updateFavorites(movie: MovieEntity) {
         viewModelScope.launch {
@@ -154,17 +153,25 @@ class MovieViewModel(
         }
     }
 
-    fun toggleFavorite(movie: Movie) {
+     fun toggleFavorite(movie: Movie) {
         viewModelScope.launch {
             try {
-                // Crear una versión actualizada de la película
-                val updatedMovieEntity = movie.toMovieEntity().copy(isFavorite = !movie.isFavorite)
-                movieDao.updateMovie(updatedMovieEntity)
+                val movieEntity = movie.toMovieEntity()
 
-                // Actualizar la lista de películas en el estado UI
+                // Verifica si la película ya está en la base de datos
+                val existingMovie = movieDao.getMovieByTitle(movieEntity.title)
+                if (existingMovie != null) {
+                    // Si existe, actualiza solo el campo `isFavorite`
+                    movieDao.updateMovie(movieEntity.copy(isFavorite = !movieEntity.isFavorite))
+                } else {
+                    // Si no existe, insertala
+                    movieDao.insert(movieEntity)
+                }
+
+                // Actualiza la UI con el nuevo estado
                 _uiState.value = _uiState.value.copy(
                     movies = _uiState.value.movies.map { movieItem ->
-                        if (movieItem.id == movie.id) {
+                        if (movieItem.id == movieEntity.id) {
                             movieItem.copy(isFavorite = !movieItem.isFavorite)
                         } else movieItem
                     }
@@ -174,6 +181,7 @@ class MovieViewModel(
             }
         }
     }
+
 
     // Eliminar película de favoritos y sincronizar con el repositorio
     fun removeMovie(movie: MovieEntity) {

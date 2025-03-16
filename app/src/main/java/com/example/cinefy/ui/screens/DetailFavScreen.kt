@@ -47,6 +47,8 @@ fun DetailFavScreen(
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
     )
+    val uiStateProfile by movieViewModel.uiStateProfile.collectAsState()
+    var nameUser by remember { mutableStateOf(uiStateProfile.nameUser) }
     val uiState by movieViewModel.uiState.collectAsState()
     val movie = uiState.movies.find { it.title == movieTitle }
     val isLoading = uiState.isLoading
@@ -54,6 +56,10 @@ fun DetailFavScreen(
     // Detectar el tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
+    // Usar LaunchedEffect para actualizar 'nameUser' cuando 'uiStateProfile' cambie
+    LaunchedEffect(uiStateProfile) {
+        nameUser = uiStateProfile.nameUser
+    }
 
     LaunchedEffect(movie) {
         movie?.let {
@@ -64,7 +70,7 @@ fun DetailFavScreen(
     fun onAddComment(comment: String) {
         if (comment.isNotBlank() && movie != null) {
             val comentario = Comment(
-                author = "juan", // Poner nombre de usuario predeterminado
+                author = nameUser, // Poner nombre de usuario predeterminado
                 favoriteName = movie.title,
                 content = comment
             )
