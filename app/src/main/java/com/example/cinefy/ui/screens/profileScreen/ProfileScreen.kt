@@ -46,20 +46,17 @@ fun ProfileScreenContent(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
-    // Obtener el nombre de usuario almacenado
-    LaunchedEffect(Unit) {
-        userPreferences.usernameFlow.collect { savedUsername ->
-            savedUsername?.let { nameUser = it }
-        }
+    // Recuperar el estado de usuario registrado desde DataStore
+    val isRegisteredFlow = userPreferences.isRegisteredFlow.collectAsState(initial = false)
 
-        // Verificar si el usuario ya está en la base de datos
+    LaunchedEffect(Unit) {
         coroutineScope.launch {
-            isRegistered = movieViewModel.isUserRegistered(nameUser)
+            isRegistered = isRegisteredFlow.value
         }
     }
 
     if (isRegistered) {
-        RegisteredUserScreen(nameUser)
+        RegisteredUserScreen(userPreferences, movieViewModel, uiStateProfile)
     } else {
         Column(
             modifier = modifier
@@ -108,14 +105,16 @@ fun ProfileScreenContent(
                         } else if (passwordExists) {
                             errorMessage = "La contraseña ya está en uso. Elige otra."
                         } else {
-                            userPreferences.saveUsername(nameUser)
+                            userPreferences.saveUsername(nameUser) // Guardamos el nombre
                             userPreferences.savePassword(passwordUser)
 
                             val newUser = SingIn(userName = nameUser, password = passwordUser)
                             movieViewModel.insertarUsuario(newUser)
 
+                            userPreferences.saveUserRegistered(true) // Guardar estado de usuario registrado
+
                             isRegistered = true
-                            errorMessage = null // Limpiar mensaje de error
+                            errorMessage = null
                         }
                     }
                 },
@@ -129,25 +128,64 @@ fun ProfileScreenContent(
 
 
 @Composable
-fun RegisteredUserScreen(nameUser: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(R.drawable.cinefylogo_copy),
-            contentDescription = null,
-            modifier = Modifier
-                .height(150.dp)
-                .width(150.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+fun RegisteredUserScreen(
+    userPreferences: UserPreferencesManager,
+    movieViewModel: MovieViewModel,
+    profileUiState: ProfileUiState,
+    modifier: Modifier = Modifier
+) {
+    var nameUser by remember { mutableStateOf(profileUiState.nameUser) }
+    val coroutineScope = rememberCoroutineScope()
+    var isLoggedOut by remember { mutableStateOf(false) }
 
-        Text(text = "Bienvenido, $nameUser", color = Color.White)
+    // Recuperar el nombre de usuario almacenado
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            userPreferences.usernameFlow.collect { savedUsername ->
+                savedUsername?.let { nameUser = it }
+            }
+        }
+    }
+    if (isLoggedOut) {
+        ProfileScreenContent(
+            movieViewModel = movieViewModel,
+            userPreferences = userPreferences,
+        )
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.cinefylogo_copy),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(150.dp)
+                    .width(150.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = "Bienvenido, $nameUser", color = Color.White)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón para cerrar sesión
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        userPreferences.logout() // Llama a la función para cambiar el estado
+                        isLoggedOut = true
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Cerrar Sesión")
+            }
+        }
     }
 }
+
 
 

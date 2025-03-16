@@ -2,6 +2,7 @@ package com.example.cinefy.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.map
 
 class UserPreferencesManager(private val dataStore: DataStore<Preferences>) {
     companion object {
+        private val IS_REGISTERED_KEY = booleanPreferencesKey("is_registered")
         val SETTINGS_FILE: String = "user_prefs"
         val USERNAME_KEY = stringPreferencesKey("username")
         val PASSWORD_KEY = stringPreferencesKey("password")
@@ -23,6 +25,19 @@ class UserPreferencesManager(private val dataStore: DataStore<Preferences>) {
     // Flow para obtener el tema guardado
     val themeFlow: Flow<String?> = dataStore.data.map { preferences ->
         preferences[THEME_KEY] ?: "system"
+    }
+    val isRegisteredFlow: Flow<Boolean> = dataStore.data
+        .map { preferences -> preferences[IS_REGISTERED_KEY] ?: false }
+
+    suspend fun saveUserRegistered(isRegistered: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[IS_REGISTERED_KEY] = isRegistered
+        }
+    }
+    suspend fun logout() {
+        dataStore.edit { preferences ->
+            preferences[IS_REGISTERED_KEY] = false // Cambia el estado para volver a login
+        }
     }
 
     // Guardar el nombre del usuario
