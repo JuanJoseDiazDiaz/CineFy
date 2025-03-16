@@ -9,11 +9,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cinefy.R
 import com.example.cinefy.data.UserPreferencesManager
+import com.example.cinefy.datamodel.Comment
+import com.example.cinefy.datamodel.SingIn
+import com.example.cinefy.ui.movie.MovieViewModel
 import kotlinx.coroutines.launch
 
 class ProfileScreen : ComponentActivity() {
@@ -30,12 +35,15 @@ class ProfileScreen : ComponentActivity() {
 
 @Composable
 fun ProfileScreenContent(
-    userPreferences: UserPreferencesManager,  // Ahora lo pasamos como parámetro
+    movieViewModel: MovieViewModel,
+    userPreferences: UserPreferencesManager,
     modifier: Modifier = Modifier
 ) {
-    var nameUser by remember { mutableStateOf("") }
-    var themePreference by remember { mutableStateOf("system") }
-
+    val uiStateProfile by movieViewModel.uiStateProfile.collectAsState()
+    var nameUser by remember { mutableStateOf(uiStateProfile.nameUser) }
+    var passwordUser by remember { mutableStateOf(uiStateProfile.passwordUser) }
+    var isRegistered by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
     // Obtener el nombre de usuario almacenado
@@ -43,10 +51,87 @@ fun ProfileScreenContent(
         userPreferences.usernameFlow.collect { savedUsername ->
             savedUsername?.let { nameUser = it }
         }
+
+        // Verificar si el usuario ya está en la base de datos
+        coroutineScope.launch {
+            isRegistered = movieViewModel.isUserRegistered(nameUser)
+        }
     }
 
+    if (isRegistered) {
+        RegisteredUserScreen(nameUser)
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.cinefylogo_copy),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(150.dp)
+                    .width(150.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextField(
+                value = nameUser,
+                onValueChange = { nameUser = it },
+                label = { Text(text = "Nombre de usuario") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TextField(
+                value = passwordUser,
+                onValueChange = { passwordUser = it },
+                label = { Text(text = "Password") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            errorMessage?.let {
+                Text(text = it, color = Color.Red, modifier = Modifier.padding(8.dp))
+            }
+
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        val userExists = movieViewModel.isUserRegistered(nameUser)
+                        val passwordExists = movieViewModel.isPasswordRegistered(passwordUser)
+
+                        if (userExists) {
+                            errorMessage = "El nombre de usuario ya está en uso."
+                        } else if (passwordExists) {
+                            errorMessage = "La contraseña ya está en uso. Elige otra."
+                        } else {
+                            userPreferences.saveUsername(nameUser)
+                            userPreferences.savePassword(passwordUser)
+
+                            val newUser = SingIn(userName = nameUser, password = passwordUser)
+                            movieViewModel.insertarUsuario(newUser)
+
+                            isRegistered = true
+                            errorMessage = null // Limpiar mensaje de error
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Guardar Usuario")
+            }
+        }
+    }
+}
+
+
+@Composable
+fun RegisteredUserScreen(nameUser: String) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,53 +146,8 @@ fun ProfileScreenContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // TextField para el nombre de usuario
-        TextField(
-            value = nameUser,
-            onValueChange = { nameUser = it },
-            label = { Text(text = "Nombre de usuario") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Guardar el nombre de usuario en DataStore
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    userPreferences.saveUsername(nameUser)
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Guardar Nombre")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Selector de tema
-        Text(text = "Seleccionar tema:")
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(onClick = {
-                coroutineScope.launch { userPreferences.saveTheme("light") }
-            }) { Text("Claro") }
-
-            Button(onClick = {
-                coroutineScope.launch { userPreferences.saveTheme("dark") }
-            }) { Text("Oscuro") }
-
-            Button(onClick = {
-                coroutineScope.launch { userPreferences.saveTheme("system") }
-            }) { Text("Sistema") }
-        }
+        Text(text = "Bienvenido, $nameUser", color = Color.White)
     }
 }
 
-@Preview(showBackground = true, widthDp = 400)
-@Composable
-fun ProfileScreenPreview() {
-//    ProfileScreenContent(
-//
-//    )
-}
+

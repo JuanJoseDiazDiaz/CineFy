@@ -11,6 +11,7 @@ class UserPreferencesManager(private val dataStore: DataStore<Preferences>) {
     companion object {
         val SETTINGS_FILE: String = "user_prefs"
         val USERNAME_KEY = stringPreferencesKey("username")
+        val PASSWORD_KEY = stringPreferencesKey("password")
         val THEME_KEY = stringPreferencesKey("theme") // "light", "dark" o "system"
     }
 
@@ -28,6 +29,12 @@ class UserPreferencesManager(private val dataStore: DataStore<Preferences>) {
     suspend fun saveUsername(username: String) {
         dataStore.edit { preferences ->
             preferences[USERNAME_KEY] = username
+        }
+    }
+    // Guardar el nombre del usuario
+    suspend fun savePassword(password: String) {
+        dataStore.edit { preferences ->
+            preferences[PASSWORD_KEY] = password
         }
     }
 

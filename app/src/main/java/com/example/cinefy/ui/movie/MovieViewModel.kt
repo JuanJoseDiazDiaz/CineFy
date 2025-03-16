@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
@@ -23,10 +24,13 @@ import com.example.cinefy.localdatabase.MovieDao
 import com.example.cinefy.localdatabase.MovieDatabase
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
+import com.example.cinefy.datamodel.SingIn
 import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
+import com.example.cinefy.repository.UserRepository
+import com.example.cinefy.ui.screens.profileScreen.ProfileUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,12 +44,18 @@ class MovieViewModel(
     private val movieDao: MovieDao,
     private val favoriteListRepository: FavoriteListRepository,
     private val context: Context,
-    private val comentarioRepository: CommentRepository
+    private val comentarioRepository: CommentRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _comentarios = MutableStateFlow<List<Comment>>(emptyList())
     val comentarios: StateFlow<List<Comment>> get() = _comentarios.asStateFlow()
     private val _uiState = MutableStateFlow(MovieUiState())
     val uiState: StateFlow<MovieUiState> = _uiState.asStateFlow()
+
+    //uistate de Profile
+    private val _uiStateProfile = MutableStateFlow(ProfileUiState())
+    val uiStateProfile: StateFlow<ProfileUiState> = _uiStateProfile.asStateFlow()
+
     val favoriteMovies: LiveData<List<Movie>> = movieDao.getFavoriteMovies()
         .map { list -> list.map { it.toMovie() } }
         .asLiveData()
@@ -59,7 +69,8 @@ class MovieViewModel(
             movieDao: MovieDao,
             favoriteListRepository: FavoriteListRepository,
             context: Context,
-            comentarioRepository: CommentRepository
+            comentarioRepository: CommentRepository,
+            userRepository: UserRepository
         ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 MovieViewModel(
@@ -67,7 +78,8 @@ class MovieViewModel(
                     movieDao,
                     favoriteListRepository,
                     context,
-                    comentarioRepository
+                    comentarioRepository,
+                    userRepository
                 )
             }
         }
@@ -128,6 +140,12 @@ class MovieViewModel(
         }
     }
 
+    fun insertarUsuario(user: SingIn){
+        viewModelScope.launch {
+            userRepository.insertarUsuario(user)
+        }
+    }
+
 
     // Agregar esta función para sincronizar los favoritos
     fun updateFavorites(movie: MovieEntity) {
@@ -178,6 +196,14 @@ class MovieViewModel(
 
     fun initializeUserData(name: String, password: String, email: String) {
         // Lógica para inicializar datos del usuario
+    }
+
+    suspend fun isUserRegistered(nameUser: String): Boolean {
+        return userRepository.getUserByName(nameUser) != null
+    }
+
+    suspend fun isPasswordRegistered(passwordUser: String): Boolean {
+        return userRepository.getUserByPassword(passwordUser) != null
     }
 }
 

@@ -125,6 +125,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("pag_Profile") {
                             ProfileScreenContent(
+                                movieViewModel,
                                 userPreferences = userPreferences,
                                 modifier = Modifier.padding(innerPadding)
                             )

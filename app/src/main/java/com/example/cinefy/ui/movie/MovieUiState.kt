@@ -5,9 +5,6 @@ import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
 
 data class MovieUiState(
-    val nameUser: String = "",
-    val passwordUser: String = "",
-    val emailUser: String = "",
     val movies: List<Movie> = emptyList(),
     val moviesEntitys: List<MovieEntity> = emptyList(),
     val isLoading: Boolean = false,
