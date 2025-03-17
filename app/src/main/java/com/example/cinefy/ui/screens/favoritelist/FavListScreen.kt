@@ -2,7 +2,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -29,7 +27,7 @@ import com.example.cinefy.R
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.datamodel.toMovieEntity
-import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 import com.example.cinefy.ui.screens.movieElementList.MedHeaderComp
 

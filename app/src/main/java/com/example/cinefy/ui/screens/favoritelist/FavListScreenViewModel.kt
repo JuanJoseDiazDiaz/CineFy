@@ -1,25 +1,19 @@
 package com.example.cinefy.ui.screens.favoritelist
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.datamodel.Comment
-import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
-import com.example.cinefy.datamodel.SingIn
-import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.localdatabase.MovieDao
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
-import com.example.cinefy.ui.movie.MovieUiState
-import com.example.cinefy.ui.movie.MovieViewModel
-import kotlinx.coroutines.flow.Flow
+import com.example.cinefy.ui.screens.movieElementList.MovieUiState
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,50 +1,43 @@
 package com.example.cinefy
 
 import FavListScreenContent
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.data.DataCinefy
 import com.example.cinefy.data.DataCinefy.findMovieByTitle
-import com.example.cinefy.data.UserPreferencesManager
-import com.example.cinefy.datamodel.MovieEntity
-import com.example.cinefy.repository.MovieRepository
 //import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.screens.AboutUsScreen
 import com.example.cinefy.ui.screens.ContactarCreadorIntent
 
 import com.example.cinefy.ui.screens.profileScreen.ProfileScreenContent
 import com.example.cinefy.ui.componets.BottomNavigationBar
-import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 import com.example.cinefy.ui.screens.DetailFavScreen
 import com.example.cinefy.ui.screens.DetailItemScreen
 import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 import com.example.cinefy.ui.screens.movieElementList.ElementListScreen
-import com.example.cinefy.utils.getWindowSizeClass
+import com.example.cinefy.ui.screens.profileScreen.ModoVisualizacionPantalla
+import com.example.cinefy.ui.screens.profileScreen.ProfileViewModel
 import com.example.cinefy.ui.theme.CinefyTheme
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+
 //val Context.dataStore by preferencesDataStore(name = UserPreferencesManager.SETTINGS_FILE)
 
 class MainActivity : ComponentActivity() {
@@ -72,19 +65,10 @@ class MainActivity : ComponentActivity() {
         favListScrenViewModel = ViewModelProvider(this, favFactory)
             .get(FavListScrenViewModel::class.java)
 
+
         // Usar la instancia global de UserPreferencesManager desde MovieReleaseApplication
         val userPreferences = app.userPreferencesRepository
 
-        // Aplicar el tema guardado en las preferencias del usuario
-        lifecycleScope.launch {
-            userPreferences.themeFlow.collectLatest { theme ->
-                when (theme) {
-                    "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                }
-            }
-        }
 
         // Contenido de la interfaz de usuario
         setContent {
@@ -93,7 +77,15 @@ class MainActivity : ComponentActivity() {
             val currentRoute by navController.currentBackStackEntryFlow.map { it.destination.route }
                 .collectAsState(initial = null)
 
-            CinefyTheme {
+            val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
+            val profileUiState by movieViewModel.uiStateProfile.collectAsState()
+            val isDarkTheme = when( profileUiState.modoDeVisualizacionPantalla){
+                ModoVisualizacionPantalla.CLARO -> false
+                ModoVisualizacionPantalla.OSCURO -> true
+                ModoVisualizacionPantalla.SISTEMA -> isSystemInDarkTheme()
+            }
+
+            CinefyTheme(darkTheme = isDarkTheme) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
@@ -120,6 +112,7 @@ class MainActivity : ComponentActivity() {
                         composable("pag_Profile") {
                             ProfileScreenContent(
                                 movieViewModel,
+                                profileViewModel = profileViewModel,
                                 userPreferences = userPreferences,
                                 modifier = Modifier.padding(innerPadding)
                             )

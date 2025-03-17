@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,14 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.cinefy.R
 import com.example.cinefy.data.UserPreferencesManager
-import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.SingIn
-import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 import kotlinx.coroutines.launch
 
 class ProfileScreen : ComponentActivity() {
@@ -37,11 +35,12 @@ class ProfileScreen : ComponentActivity() {
 @Composable
 fun ProfileScreenContent(
     movieViewModel: MovieViewModel,
+    profileViewModel: ProfileViewModel,
     userPreferences: UserPreferencesManager,
     modifier: Modifier = Modifier
 ) {
 
-    val uiStateProfile by movieViewModel.uiStateProfile.collectAsState()
+    val uiStateProfile by profileViewModel.uiState.collectAsState()
     var nameUser by remember { mutableStateOf(uiStateProfile.nameUser) }
     var passwordUser by remember { mutableStateOf(uiStateProfile.passwordUser) }
     var isRegistered by remember { mutableStateOf(false) }
@@ -57,8 +56,12 @@ fun ProfileScreenContent(
         }
     }
 
+    LaunchedEffect(uiStateProfile.modoDeVisualizacionPantalla) {
+        println("Tema cambiado a: ${uiStateProfile.modoDeVisualizacionPantalla}")
+    }
+
     if (isRegistered) {
-        RegisteredUserScreen(userPreferences, movieViewModel, uiStateProfile)
+        RegisteredUserScreen(userPreferences, movieViewModel,profileViewModel, uiStateProfile)
     } else {
         Column(
             modifier = modifier
@@ -98,17 +101,54 @@ fun ProfileScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(onClick = {
-                    coroutineScope.launch { userPreferences.saveTheme("ligth") }
-                }) { Text("Claro") }
-
-                Button(onClick = {
-                    coroutineScope.launch { userPreferences.saveTheme("dark") }
-                }) { Text("Oscuro") }
-
-                Button(onClick = {
-                    coroutineScope.launch { userPreferences.saveTheme("System") }
-                }) { Text("Sistema") }
+                RadioButton(
+                    selected = uiStateProfile.modoDeVisualizacionPantalla == ModoVisualizacionPantalla.OSCURO,
+                    onClick = {
+                        profileViewModel.setSettings(
+                            modoVisualizacionPantalla = ModoVisualizacionPantalla.OSCURO,
+                        )
+                    }
+                )
+                Text(
+                    text = stringResource(R.string.tema_oscuro),
+                    modifier = Modifier.clickable {
+                        profileViewModel.setSettings(
+                            modoVisualizacionPantalla = ModoVisualizacionPantalla.OSCURO
+                        )
+                    }
+                )
+                RadioButton(
+                    selected = uiStateProfile.modoDeVisualizacionPantalla == ModoVisualizacionPantalla.CLARO,
+                    onClick = {
+                        profileViewModel.setSettings(
+                            modoVisualizacionPantalla = ModoVisualizacionPantalla.CLARO,
+                        )
+                    }
+                )
+                Text(
+                    text = stringResource(R.string.tema_claro),
+                    modifier = Modifier.clickable {
+                        profileViewModel.setSettings(
+                            modoVisualizacionPantalla = ModoVisualizacionPantalla.CLARO
+                        )
+                    }
+                )
+                RadioButton(
+                    selected = uiStateProfile.modoDeVisualizacionPantalla == ModoVisualizacionPantalla.SISTEMA,
+                    onClick = {
+                        profileViewModel.setSettings(
+                            modoVisualizacionPantalla = ModoVisualizacionPantalla.SISTEMA,
+                        )
+                    }
+                )
+                Text(
+                    text = stringResource(R.string.tema_sistema),
+                    modifier = Modifier.clickable {
+                        profileViewModel.setSettings(
+                            modoVisualizacionPantalla = ModoVisualizacionPantalla.SISTEMA
+                        )
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
             errorMessage?.let {
@@ -120,6 +160,7 @@ fun ProfileScreenContent(
                     coroutineScope.launch {
                         val userExists = movieViewModel.isUserRegistered(nameUser)
                         val passwordExists = movieViewModel.isPasswordRegistered(passwordUser)
+                        movieViewModel.actualizarUsuario(nameUser)
 
                         if (userExists) {
                             errorMessage = "El nombre de usuario ya está en uso."
@@ -152,6 +193,7 @@ fun ProfileScreenContent(
 fun RegisteredUserScreen(
     userPreferences: UserPreferencesManager,
     movieViewModel: MovieViewModel,
+    profileViewModel: ProfileViewModel,
     profileUiState: ProfileUiState,
     modifier: Modifier = Modifier
 ) {
@@ -171,6 +213,7 @@ fun RegisteredUserScreen(
     if (isLoggedOut) {
         ProfileScreenContent(
             movieViewModel = movieViewModel,
+            profileViewModel = profileViewModel,
             userPreferences = userPreferences,
         )
     } else {

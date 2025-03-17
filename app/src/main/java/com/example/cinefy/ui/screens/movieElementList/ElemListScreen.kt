@@ -1,6 +1,5 @@
 package com.example.cinefy.ui.screens.movieElementList
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -23,8 +22,6 @@ import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.ui.componets.MovieCard
-import com.example.cinefy.ui.movie.MovieViewModel
-import com.example.cinefy.ui.screens.favoritelist.FavListScrenViewModel
 import com.example.cinefy.ui.theme.extendedLight
 
 /**

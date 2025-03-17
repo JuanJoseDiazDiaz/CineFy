@@ -1,5 +1,6 @@
 package com.example.cinefy.data
 
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -9,12 +10,15 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.cinefy.ui.screens.profileScreen.ModoVisualizacionPantalla
+import com.example.cinefy.ui.screens.profileScreen.ProfileUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class UserPreferencesManager private constructor(private val dataStore: DataStore<Preferences>) {
-
     companion object {
         private val IS_REGISTERED_KEY = booleanPreferencesKey("is_registered")
         private val USERNAME_KEY = stringPreferencesKey("username")
@@ -40,9 +44,12 @@ class UserPreferencesManager private constructor(private val dataStore: DataStor
         username
     }
 
-    // Obtener flujo para el tema guardado
-    val themeFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[THEME_KEY] ?: "system"
+    val themeFlow: Flow<ModoVisualizacionPantalla> = dataStore.data.map { preferences ->
+        when (preferences[THEME_KEY] ?: "SYSTEM") {
+            "DARK" -> ModoVisualizacionPantalla.OSCURO
+            "LIGHT" -> ModoVisualizacionPantalla.CLARO
+            else -> ModoVisualizacionPantalla.SISTEMA
+        }
     }
 
     // Obtener estado de registro
@@ -95,4 +102,17 @@ class UserPreferencesManager private constructor(private val dataStore: DataStor
             else -> if (isSystemInDarkTheme()) androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color.Black
         }
     }
+    val userPrefs: Flow<ProfileUiState> = dataStore.data
+        .catch {
+            if (it is java.io.IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map { preferences ->
+            val modoVisualizacion = preferences[THEME_KEY] ?: ModoVisualizacionPantalla.SISTEMA.modoVisualizacion
+            ProfileUiState(modoVisualizacion)
+        }
 }

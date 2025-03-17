@@ -1,6 +1,5 @@
-package com.example.cinefy.ui.movie
+package com.example.cinefy.ui.screens.movieElementList
 
-import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
 

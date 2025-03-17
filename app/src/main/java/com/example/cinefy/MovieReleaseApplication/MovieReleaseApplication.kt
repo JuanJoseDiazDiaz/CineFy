@@ -10,7 +10,7 @@ import com.example.cinefy.localdatabase.MovieDatabase
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
 import com.example.cinefy.repository.UserRepository
-import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 
 // Singleton de DataStore para evitar conflictos
 val Context.dataStore by preferencesDataStore(name = "user_prefs")

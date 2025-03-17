@@ -1,28 +1,19 @@
-package com.example.cinefy.ui.movie
+package com.example.cinefy.ui.screens.movieElementList
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
-import com.example.cinefy.R
 import com.example.cinefy.data.RetrofitInstance
 import com.example.cinefy.data.UserPreferencesManager
 import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.repository.MovieRepository
 import com.example.cinefy.localdatabase.MovieDao
-import com.example.cinefy.localdatabase.MovieDatabase
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.datamodel.MovieEntity
 import com.example.cinefy.datamodel.SingIn
@@ -32,13 +23,11 @@ import com.example.cinefy.datamodel.toMovieEntity
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
 import com.example.cinefy.repository.UserRepository
-import com.example.cinefy.ui.screens.favoritelist.ErrorMessageFAV
 import com.example.cinefy.ui.screens.profileScreen.ProfileUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -133,6 +122,10 @@ class MovieViewModel(
         }
     }
 
+    fun actualizarUsuario(nombre: String) {
+        _uiStateProfile.value = _uiStateProfile.value.copy(nameUser = nombre)
+    }
+
     fun obtenerComentariosPorFavorito(favoriteName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val nuevosComentarios = comentarioRepository.obtenerComentariosPorFavorito(favoriteName)
@@ -223,7 +216,6 @@ class MovieViewModel(
             )
         }
     }
-
 
     fun resetDataUser() {
         _uiState.value = MovieUiState()

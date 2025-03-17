@@ -2,7 +2,6 @@ package com.example.cinefy.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,7 +20,7 @@ import com.example.cinefy.R
 import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
 import com.example.cinefy.ui.componets.MovieCardDetail
-import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 import com.example.cinefy.ui.screens.movieElementList.MedHeaderCompDetail
 
 @Composable

@@ -8,7 +8,7 @@ import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.MovieEntity
 import com.example.cinefy.datamodel.SingIn
 
-@Database(entities = [Comment::class, MovieEntity::class, SingIn::class], version = 16, exportSchema = false)
+@Database(entities = [Comment::class, MovieEntity::class, SingIn::class], version = 18, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class MovieDatabase : RoomDatabase() {
     abstract fun moviesDAO(): MovieDao

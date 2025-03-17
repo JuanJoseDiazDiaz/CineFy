@@ -29,4 +29,7 @@
     <string name="movie_not_found">Peliculas no encontradas</string>
     <string name="already">La pelicula ya esta en favoritos</string>
     <string name="addfavorite">Pelicula añadida a favoritos</string>
+    <string name="tema_oscuro">Oscuro</string>
+    <string name="tema_claro">Claro</string>
+    <string name="tema_sistema">Sistema</string>
 </resources>

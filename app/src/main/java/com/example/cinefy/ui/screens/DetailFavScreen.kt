@@ -1,19 +1,11 @@
 package com.example.cinefy.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.twotone.AccountCircle
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -27,9 +19,8 @@ import com.example.cinefy.MovieReleaseApplication.MovieReleaseApplication
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.Comment
 import com.example.cinefy.datamodel.Movie
-import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.ui.componets.MovieCardDetail
-import com.example.cinefy.ui.movie.MovieViewModel
+import com.example.cinefy.ui.screens.movieElementList.MovieViewModel
 import com.example.cinefy.ui.screens.movieElementList.MedHeaderCompDetail
 import com.example.cinefy.ui.theme.extendedLight
 
@@ -54,7 +45,9 @@ fun DetailFavScreen(
 
     // Obtener el estado del perfil (incluido el nombre de usuario)
     val uiStateProfile by movieViewModel.uiStateProfile.collectAsState()
-    var nameUser = uiStateProfile.nameUser.takeUnless { it.isNullOrEmpty() } ?: "Usuario desconocido"
+    val nameUser by rememberUpdatedState(
+        uiStateProfile.nameUser.takeUnless { it.isNullOrEmpty() } ?: "Usuario desconocido"
+    )
     val uiState by movieViewModel.uiState.collectAsState()
     val movie = uiState.movies.find { it.title == movieTitle }
 
@@ -73,9 +66,9 @@ fun DetailFavScreen(
         }
     }
 
-    LaunchedEffect(nameUser) {
-        Log.d("NameUser", "Nombre de usuario capturado: $nameUser")
-    }
+//    LaunchedEffect(nameUser) {
+//        Log.d("NameUser", "Nombre de usuario capturado: $nameUser")
+//    }
 
     // Función para agregar comentario
     fun onAddComment(comment: String) {
