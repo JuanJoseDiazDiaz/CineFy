@@ -12,9 +12,12 @@ import com.example.cinefy.repository.FavoriteListRepository
 import com.example.cinefy.repository.UserRepository
 import com.example.cinefy.ui.movie.MovieViewModel
 
-val Context.dataStore by preferencesDataStore(name = UserPreferencesManager.SETTINGS_FILE)
+// Singleton de DataStore para evitar conflictos
+val Context.dataStore by preferencesDataStore(name = "user_prefs")
 
 class MovieReleaseApplication : Application() {
+
+    // Dependencias
     lateinit var userPreferencesRepository: UserPreferencesManager
     lateinit var listRepository: FavoriteListRepository
     lateinit var commentRepository: CommentRepository
@@ -22,22 +25,27 @@ class MovieReleaseApplication : Application() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var userRepository: UserRepository
 
-    //Contenedor de dependencias manuales que se usa por completo en la app
     override fun onCreate() {
         super.onCreate()
-//Creación de la instancia del repositorio de preferencias de usuario
-        userPreferencesRepository = UserPreferencesManager(dataStore)
-        listRepository = FavoriteListRepository(
-            MovieDatabase.getDatabase(this).moviesDAO(),
-        )
-        commentRepository = CommentRepository(MovieDatabase.getDatabase(this).commentsDAO())
-        userRepository = UserRepository(MovieDatabase.getDatabase(this).userDAO())
+
+        // Instancia única de UserPreferencesManager con DataStore
+        userPreferencesRepository = UserPreferencesManager.getInstance(dataStore)
+
+        // Base de datos y repositorios
         val database = MovieDatabase.getDatabase(this)
         moviesDao = database.moviesDAO()
-        // Crear la fábrica del ViewModel
+        listRepository = FavoriteListRepository(moviesDao)
+        commentRepository = CommentRepository(database.commentsDAO())
+        userRepository = UserRepository(database.userDAO())
+
+        // Configuración de ViewModel Factory
         viewModelFactory = MovieViewModel.Factory(
-            userPreferencesRepository, moviesDao, listRepository, applicationContext, commentRepository,userRepository
+            userPreferencesRepository,
+            moviesDao,
+            listRepository,
+            applicationContext,
+            commentRepository,
+            userRepository
         )
     }
-
 }

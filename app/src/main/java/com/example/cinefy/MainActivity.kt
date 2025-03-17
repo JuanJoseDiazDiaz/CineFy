@@ -45,34 +45,37 @@ import com.example.cinefy.ui.theme.CinefyTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-//Datastore. Configuración básica de la app.
-val Context.dataStore by preferencesDataStore(name = UserPreferencesManager.SETTINGS_FILE)
+//val Context.dataStore by preferencesDataStore(name = UserPreferencesManager.SETTINGS_FILE)
+
 class MainActivity : ComponentActivity() {
-    lateinit var userPreferencesRepository: UserPreferencesManager
-    lateinit var movieRepository: MovieRepository
+    // Repositorios y ViewModels
     private lateinit var movieViewModel: MovieViewModel
     private lateinit var favListScrenViewModel: FavListScrenViewModel
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // Inicialización del MovieViewModel usando la fábrica de la aplicación
+
+        // Recuperar la instancia de MovieReleaseApplication
         val app = application as MovieReleaseApplication
-        movieViewModel = ViewModelProvider(this, app.viewModelFactory).get(MovieViewModel::class.java)
 
-        // Pasar el movieViewModel al ViewModelFactory de FavListScrenViewModel
-        val favFactory = FavListScrenViewModel.Factory(application = app, movieViewModel = movieViewModel)
+        // Recuperar el ViewModel de Movie
+        movieViewModel = ViewModelProvider(this, app.viewModelFactory)
+            .get(MovieViewModel::class.java)
 
-        // Inicialización del FavListScrenViewModel
-        favListScrenViewModel = ViewModelProvider(this, favFactory).get(FavListScrenViewModel::class.java)
-        //Creación de la instancia del repositorio de preferencias de usuario
-        userPreferencesRepository = UserPreferencesManager(dataStore)
+        // Configurar el ViewModel de la lista de favoritos
+        val favFactory = FavListScrenViewModel.Factory(
+            application = app,
+            movieViewModel = movieViewModel,
+            moviUiState = movieViewModel.uiState.value
+        )
+        favListScrenViewModel = ViewModelProvider(this, favFactory)
+            .get(FavListScrenViewModel::class.java)
 
-        val userPreferences = UserPreferencesManager(dataStore)
+        // Usar la instancia global de UserPreferencesManager desde MovieReleaseApplication
+        val userPreferences = app.userPreferencesRepository
 
-        // Recuperar y aplicar el tema guardado
+        // Aplicar el tema guardado en las preferencias del usuario
         lifecycleScope.launch {
             userPreferences.themeFlow.collectLatest { theme ->
                 when (theme) {
@@ -82,36 +85,26 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        val exampleMovie = MovieEntity(
-            rank = 32,
-            title = "OppenHeimer",
-            description = "The story of American scientist, J. Robert Oppenheimer, " +
-                    "and his role in the development of the atomic bomb.",
-            imageUrl = "openheimerposter",
-            bigImageUrl = "openheimerposter",
-            genres = listOf("Historia, Accion"),
-            thumbnailUrl = "openheimerposter",
-            rating = 8.6f,
-            id = "top32",
-            year = 2023,
-            imdbId = "tt15398776",
-            imdbLink = "https://www.imdb.com/title/tt15398776"
 
-        )
+        // Contenido de la interfaz de usuario
         setContent {
             val movies = DataCinefy.movieList()
-            val windowSize = getWindowSizeClass(LocalContext.current as Activity)
             val navController = rememberNavController()
             val currentRoute by navController.currentBackStackEntryFlow.map { it.destination.route }
                 .collectAsState(initial = null)
 
             CinefyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-//                        if (windowSize == WindowWidthSizeClass.Compact && currentRoute?.contains("details") == false)
-                            BottomNavigationBar(navController, currentRoute)
-                    }) { innerPadding ->
-                    NavHost(navController = navController, startDestination = "movie_list") {
+                        BottomNavigationBar(navController, currentRoute)
+                    }
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "movie_list"
+                    ) {
+
                         composable("movie_list") {
                             ElementListScreen(
                                 modifier = Modifier.padding(innerPadding),
@@ -147,7 +140,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("details/{movie_title}") { backStackEntry ->
                             val movieTitle = backStackEntry.arguments?.getString("movie_title")
-                            val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
+                            val movie = findMovieByTitle(movies, movieTitle ?: "") ?: DataCinefy.exampleMovie
                             DetailItemScreen(
                                 movieTitle = movieTitle,
                                 modifier = Modifier.padding(innerPadding),
@@ -157,7 +150,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("details_fav/{movie_title}") { backStackEntry ->
                             val movieTitle = backStackEntry.arguments?.getString("movie_title")
-                            val movie = findMovieByTitle(movies, movieTitle ?: "") ?: exampleMovie
                             DetailFavScreen(
                                 movieTitle = movieTitle,
                                 navController = navController,

@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.cinefy"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.cinefy"

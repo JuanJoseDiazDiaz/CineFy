@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -39,6 +40,7 @@ fun ProfileScreenContent(
     userPreferences: UserPreferencesManager,
     modifier: Modifier = Modifier
 ) {
+
     val uiStateProfile by movieViewModel.uiStateProfile.collectAsState()
     var nameUser by remember { mutableStateOf(uiStateProfile.nameUser) }
     var passwordUser by remember { mutableStateOf(uiStateProfile.passwordUser) }
@@ -153,6 +155,7 @@ fun RegisteredUserScreen(
     profileUiState: ProfileUiState,
     modifier: Modifier = Modifier
 ) {
+    val textColor = userPreferences.dynamicTextColor(userPreferences)
     var nameUser by remember { mutableStateOf(profileUiState.nameUser) }
     val coroutineScope = rememberCoroutineScope()
     var isLoggedOut by remember { mutableStateOf(false) }
@@ -187,7 +190,7 @@ fun RegisteredUserScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Bienvenido, $nameUser", color = Color.White)
+            Text(text = "Bienvenido, $nameUser", color = textColor)
             Spacer(modifier = Modifier.height(16.dp))
 
             // Botón para cerrar sesión

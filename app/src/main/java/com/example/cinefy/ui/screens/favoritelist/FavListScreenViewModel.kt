@@ -17,6 +17,7 @@ import com.example.cinefy.datamodel.toMovie
 import com.example.cinefy.localdatabase.MovieDao
 import com.example.cinefy.repository.CommentRepository
 import com.example.cinefy.repository.FavoriteListRepository
+import com.example.cinefy.ui.movie.MovieUiState
 import com.example.cinefy.ui.movie.MovieViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,13 +31,15 @@ class FavListScrenViewModel(
     private val listRepository: FavoriteListRepository,
     private val commentRepository: CommentRepository,
     private val movieDao: MovieDao,
-    private val movieViewModel: MovieViewModel
+    private val movieViewModel: MovieViewModel,
+    private val moviUiState: MovieUiState
 ): ViewModel() {
 
     companion object {
         fun Factory(
             application: Application,
-            movieViewModel: MovieViewModel
+            movieViewModel: MovieViewModel,
+            moviUiState: MovieUiState
         ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = application as MovieReleaseApplication
@@ -44,13 +47,18 @@ class FavListScrenViewModel(
                     app.listRepository,
                     app.commentRepository,
                     app.moviesDao,
-                    movieViewModel
+                    movieViewModel,
+                    moviUiState
                 )
             }
         }
     }
     private val _uiState = MutableStateFlow(FavListScreenUiState())
     val uiState: StateFlow<FavListScreenUiState> = _uiState.asStateFlow()
+
+    //UI MOVIE
+    private val _uiStateMovie = MutableStateFlow(MovieUiState())
+    val uiStateMovie: StateFlow<MovieUiState> = _uiStateMovie.asStateFlow()
 
     init {
         recuperarFavoritos()
@@ -83,27 +91,46 @@ class FavListScrenViewModel(
     fun borrarFavorito(movieEntity: MovieEntity) {
         viewModelScope.launch {
             try {
-                // Cambiar el estado de la película en la base de datos para marcarla como no favorita
+                // Paso 1: Actualizar el estado de la película a no favorita en el repositorio
                 val updatedMovie = movieEntity.copy(isFavorite = false)
 
-                // Actualizar la base de datos, pero no eliminar la película
+                // Actualizar el repositorio con el nuevo estado de favorito (sin eliminar la película)
                 listRepository.update(updatedMovie)
 
-
-                // Actualizar la lista de películas favoritas en la UI
+                // Paso 2: Actualizar la UI en el estado actual para reflejar que ya no es favorita
                 _uiState.update { currentState ->
                     currentState.copy(
-                        favorites = currentState.favorites.filter { it.id != movieEntity.id }
+                        favorites = currentState.favorites.map {
+                            if (it.id == movieEntity.id) it.copy(isFavorite = false) else it
+                        }
                     )
                 }
+
+                // Paso 3: Sincronizar el cambio con el MovieViewModel si es necesario
+                movieViewModel.updateFavoriteStatus(updatedMovie, false)
+
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    errorMessageFAV = ErrorMessageFAV.ERROR_UPDATING_FAV
-                )
+                // Manejo de errores: actualizar el estado con un mensaje de error
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        errorMessageFAV = ErrorMessageFAV.ERROR_UPDATING_FAV
+                    )
+                }
             }
         }
     }
 
+
+
+
+
+    fun listenToMovieViewModel(movieViewModel: MovieViewModel) {
+        viewModelScope.launch {
+            movieViewModel.uiState.collect { movieUiState ->
+                _uiStateMovie.value = movieUiState
+            }
+        }
+    }
 
 
 

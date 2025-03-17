@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.twotone.FavoriteBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -56,10 +57,10 @@ fun MovieCard(
     val addedToFavorite = stringResource(R.string.addfavorite)
 
     // 🔹 Aquí usamos remember para que la UI detecte cambios en la película
-    val isFavorite by remember { mutableStateOf(movie.isFavorite) }
+    var isFavorite by remember { mutableStateOf(movie.isFavorite) }
 
     LaunchedEffect(movie.isFavorite) {
-        // Fuerza la recomposición cuando isFavorite cambia
+        isFavorite = movie.isFavorite
     }
 
     Row {
@@ -69,6 +70,7 @@ fun MovieCard(
                 .clickable { onClick() },
             shape = MaterialTheme.shapes.medium,
         ) {
+
             Row(horizontalArrangement = Arrangement.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     AsyncImage(
@@ -81,36 +83,24 @@ fun MovieCard(
                         Row {
                             IconButton(
                                 onClick = {
-                                    if (!isFavorite) {
-                                        movieViewModel.toggleFavorite(movie)
-//                                        favListScrenViewModel.recuperarFavoritos()
-                                        Toast.makeText(
-                                            context,
-                                            "Película añadida a favoritos",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+                                    movieViewModel.toggleFavorite(movie)
+                                    movieViewModel.updateFavoriteStatus(movie, true)
+                                    Toast.makeText(
+                                        context,
+                                        if (isFavorite) "Película ya esta en añadida a favoritos" else "Película añadida a favoritos",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 },
                                 modifier = Modifier.size(48.dp),
                                 colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Transparent)
                             ) {
-                                if (isFavorite){
-                                    Log.d("Favorite", "Esta a true")
-                                    Icon(
-                                        imageVector =  Icons.Default.Favorite,
+                                Icon(
+                                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.TwoTone.FavoriteBorder,
                                     modifier = Modifier.size(48.dp),
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                    )
-                                }else{
-                                    Log.d("Favorite", "Esta a false")
-                                    Icon(
-                                        imageVector =  Icons.Default.FavoriteBorder,
-                                        modifier = Modifier.size(48.dp),
-                                        contentDescription = null,
-                                        tint = Color.Gray
-                                    )
-                                }
+                                    tint = if (isFavorite) Color.Red else Color.Gray
+                                )
+                                Text(isFavorite.toString())
                             }
                         }
                     }

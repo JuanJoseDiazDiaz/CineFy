@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -92,7 +93,11 @@ class MovieViewModel(
 
     init {
         getMovies()
-
+        viewModelScope.launch {
+            // Carga el nombre del usuario desde las preferencias o la base de datos
+            val savedName = userPreferencesRepository.usernameFlow.firstOrNull() ?: "Usuario Anonimo"
+            _uiStateProfile.value = ProfileUiState(nameUser = savedName)
+        }
     }
 
     fun getMovies() {
@@ -163,29 +168,32 @@ class MovieViewModel(
 
      fun toggleFavorite(movieEntity: MovieEntity) {
         viewModelScope.launch {
-            try {
+            if (!movieEntity.isFavorite) {
+                try {
 //                val movieEntity = movie.toMovieEntity()
-                // Verifica si la película ya está en la base de datos
-                val existingMovie = movieDao.getMovieByTitle(movieEntity.title)
-                if (existingMovie != null) {
-                    // Si existe, actualiza solo el campo `isFavorite`
-                    movieDao.updateMovie(movieEntity.copy(isFavorite = !movieEntity.isFavorite))
+                    // Verifica si la película ya está en la base de datos
+                    val existingMovie = movieDao.getMovieByTitle(movieEntity.title)
+                    if (existingMovie != null) {
+                        // Si existe, actualiza solo el campo `isFavorite`
+                        movieDao.updateMovie(movieEntity.copy(isFavorite = true))
 
-                } else {
-                    // Si no existe, insertala
-                    movieDao.insert(movieEntity)
-                }
-
-                // Actualiza la UI con el nuevo estado
-                _uiState.value = _uiState.value.copy(
-                    movies = _uiState.value.movies.map { movieItem ->
-                        if (movieItem.id == movieEntity.id) {
-                            movieItem.copy()
-                        } else movieItem
+                    } else {
+                        // Si no existe, insertala
+                        movieDao.insert(movieEntity)
                     }
-                )
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessage = "Error al actualizar favorito: ${e.message}")
+
+                    // Actualiza la UI con el nuevo estado
+                    _uiState.value = _uiState.value.copy(
+                        movies = _uiState.value.movies.map { movieItem ->
+                            if (movieItem.id == movieEntity.id && !movieEntity.isFavorite) {
+                                movieItem.copy(isFavorite = true)
+                            } else movieItem
+                        }
+                    )
+                } catch (e: Exception) {
+                    _uiState.value =
+                        _uiState.value.copy(errorMessage = "Error al actualizar favorito: ${e.message}")
+                }
             }
         }
     }
@@ -201,6 +209,18 @@ class MovieViewModel(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(errorMessage = "Error al eliminar la película: ${e.message}")
             }
+        }
+    }
+    fun updateFavoriteStatus(movie: MovieEntity, isFavorite: Boolean) {
+        viewModelScope.launch {
+            val updatedMovie = movie.copy(isFavorite = isFavorite)
+            movieDao.updateMovie(updatedMovie)
+
+            _uiState.value = _uiState.value.copy(
+                movies = _uiState.value.movies.map {
+                    if (it.id == movie.id) it.copy(isFavorite = isFavorite) else it
+                }
+            )
         }
     }
 

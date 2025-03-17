@@ -1,5 +1,6 @@
 package com.example.cinefy.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -37,40 +38,50 @@ import com.example.cinefy.ui.theme.extendedLight
  * */
 @Composable
 fun DetailFavScreen(
-    movieTitle: String?, // Recibe el ID de la película desde la navegación
+    movieTitle: String?, // Recibe el título de la película desde la navegación
     navController: NavController,
     comentarioViewModel: MovieViewModel,
     modifier: Modifier = Modifier
 ) {
+    // Obtener los comentarios desde el ViewModel
     val comentarios by comentarioViewModel.comentarios.collectAsState()
+
+    // Configuración del ViewModel principal
     val app = LocalContext.current.applicationContext as MovieReleaseApplication
     val movieViewModel: MovieViewModel = viewModel(
         factory = app.viewModelFactory
     )
+
+    // Obtener el estado del perfil (incluido el nombre de usuario)
     val uiStateProfile by movieViewModel.uiStateProfile.collectAsState()
-    var nameUser by remember { mutableStateOf(uiStateProfile.nameUser) }
+    var nameUser = uiStateProfile.nameUser.takeUnless { it.isNullOrEmpty() } ?: "Usuario desconocido"
     val uiState by movieViewModel.uiState.collectAsState()
     val movie = uiState.movies.find { it.title == movieTitle }
+
+    // Estado adicional
     val isLoading = uiState.isLoading
     val errorMessage = uiState.errorMessage
-    // Detectar el tamaño de la pantalla
+
+    // Detectar tamaño de la pantalla
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600 // Define el umbral para pantallas expandidas
-    // Usar LaunchedEffect para actualizar 'nameUser' cuando 'uiStateProfile' cambie
-    LaunchedEffect(uiStateProfile) {
-        nameUser = uiStateProfile.nameUser
-    }
 
+    // Obtener comentarios para la película actual
     LaunchedEffect(movie) {
         movie?.let {
             comentarioViewModel.obtenerComentariosPorFavorito(it.title)
         }
     }
+
+    LaunchedEffect(nameUser) {
+        Log.d("NameUser", "Nombre de usuario capturado: $nameUser")
+    }
+
     // Función para agregar comentario
     fun onAddComment(comment: String) {
         if (comment.isNotBlank() && movie != null) {
             val comentario = Comment(
-                author = nameUser, // Poner nombre de usuario predeterminado
+                author = nameUser, // Usar el nombre de usuario directamente
                 favoriteName = movie.title,
                 content = comment
             )
@@ -79,8 +90,11 @@ fun DetailFavScreen(
         }
     }
 
+    // Composición de la pantalla
     Column(
-        modifier = Modifier.padding(16.dp).fillMaxSize(),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -106,7 +120,10 @@ fun DetailFavScreen(
                 )
             }
             else -> {
-                Text(text = stringResource(R.string.movie_not_found), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = stringResource(R.string.movie_not_found),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }

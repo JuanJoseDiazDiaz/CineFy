@@ -2,8 +2,10 @@ package com.example.cinefy.data
 
 import com.example.cinefy.R
 import com.example.cinefy.datamodel.Movie
+import com.example.cinefy.datamodel.MovieEntity
 
 object DataCinefy {
+    val exampleMovie = MovieEntity( rank = 32, title = "OppenHeimer", description = "The story of American scientist, J. Robert Oppenheimer, " + "and his role in the development of the atomic bomb.", imageUrl = "openheimerposter", bigImageUrl = "openheimerposter", genres = listOf("Historia, Accion"), thumbnailUrl = "openheimerposter", rating = 8.6f, id = "top32", year = 2023, imdbId = "tt15398776", imdbLink = "https://www.imdb.com/title/tt15398776" )
     val movieList: () -> MutableList<Movie> = {
         mutableListOf<Movie>(
             Movie(

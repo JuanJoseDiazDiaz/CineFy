@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -43,6 +44,7 @@ class FavListScreen : ComponentActivity() {
 /**
  * Implementacion por parameteros el viewModel para que se conecte entre si
  * */
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun FavListScreenContent(
     navController: NavController,
@@ -56,7 +58,11 @@ fun FavListScreenContent(
     )
 
     // Inicializar FavListScrenViewModel pasando MovieViewModel como parámetro
-    val favFactory = FavListScrenViewModel.Factory(application = app, movieViewModel = movieViewModel)
+    val favFactory = FavListScrenViewModel.Factory(
+        application = app,
+        movieViewModel = movieViewModel,
+        moviUiState = movieViewModel.uiState.value,
+    )
     val favListViewModel: FavListScrenViewModel = viewModel(factory = favFactory)
     val configuration = LocalConfiguration.current
     val isExpanded = configuration.screenWidthDp > 600
@@ -81,8 +87,7 @@ fun FavListScreenContent(
                             navController.navigate("details_fav/${movie.title}")
                         },
                         onRemove = { removedMovie ->
-                            // Aquí utilizamos el método borrarFavorito
-                            favListViewModel.borrarFavorito(removedMovie.toMovieEntity())
+                           favListViewModel.borrarFavorito(movie)
                         }
                     )
                 }

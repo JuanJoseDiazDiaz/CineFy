@@ -53,6 +53,7 @@ fun Movie.toMovieEntity(): MovieEntity {
         year = this.year,
         imdbId = this.imdbId,
         imdbLink = this.imdbLink,
+        isFavorite = isFavorite,
         comments = emptyList() // Añadir comentarios
     )
 }
